@@ -4,6 +4,7 @@
 __author__ = 'Piratf'
 
 from reg import Reg, RegError
+from config import Config
 
 class Grammar(object):
     """list of regs"""
@@ -32,7 +33,7 @@ class Grammar(object):
         contents = [x + name for x in reg.get_str_list_after_my_head()]
         old_contents = [x + name for x in reg.contents if not x.startswith(reg.name)]
         if (len(contents) > 0 and len(old_contents) > 0):
-            contents.append('\e')
+            contents.append(Config.null)
             self.regs.append(Reg(name, contents))
             reg.contents = old_contents
         elif (len(contents) > 0 and len(old_contents) <= 0):
@@ -52,4 +53,10 @@ class Grammar(object):
                     self.remove_direct_left_recursion(i)
                 else:
                     self.remove_direct_left_recursion(j)
+
+    def extract_left_factor(self):
+        new_reg_list = []
+        for reg in self.regs:
+            [new_reg_list.append(x) for x in reg.extract_left_factor()]
+        [self.regs.append(x) for x in new_reg_list]
                 

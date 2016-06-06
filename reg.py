@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*
 # Filename: reg.py
 
+from config import Config
+
 __author__ = 'Piratf'
 
 class RegError(Exception):
@@ -40,4 +42,42 @@ class Reg(object):
 
     def get_pos_list_if_startwith_prefix(self, prefix):
         return [x for x in range(0, len(self.contents)) if self.contents[x].startswith(prefix)]
+
+    def extract_left_factor(self):
+        new_reg_list = []
+        for loop in range(100):
+            break_flag = True
+            for content in self.contents:
+                temp = []
+                max_cnt = 0;
+                prefix = 0
+                prefix_pos = 0
+                for index, char in enumerate(content):
+                    book = self.get_pos_list_if_startwith_prefix(content[0:index + 1])
+                    if len(book) >= max_cnt:
+                        temp = book
+                        prefix = content[0: index + 1]
+                        prefix_pos = index + 1
+                        max_cnt = len(book)
+                if max_cnt > 1:
+                    break_flag = False
+                    break;
+
+            if break_flag:
+                break;
+            else:
+                new_name = self.name + '`'
+                new_content = []
+                for x in sorted(book, reverse=True):
+                    # print (self.contents)
+                    # print ("del", self.contents[x])
+                    if (prefix_pos >= len(self.contents[x])):
+                        new_content.append(Config.null)
+                    else:
+                        new_content.append(self.contents[x][len(prefix):])
+                    del self.contents[x]
+                self.contents.append(prefix + new_name)
+                new_reg_list.append(Reg(new_name, new_content))
+        return new_reg_list    
+
 

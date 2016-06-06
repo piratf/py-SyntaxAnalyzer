@@ -12,23 +12,16 @@ content:
   - TE`
 ======= display end =======
 ======= reg display =======
-name = T
-content:
-  - FT`
-======= display end =======
-======= reg display =======
-name = F
-content:
-  - (E)
-  - id
-  - num
-======= display end =======
-======= reg display =======
 name = E`
 content:
   - +TE`
   - -TE`
   - \e
+======= display end =======
+======= reg display =======
+name = T
+content:
+  - FT`
 ======= display end =======
 ======= reg display =======
 name = T`
@@ -37,5 +30,12 @@ content:
   - /FT`
   - modFT`
   - \e
+======= display end =======
+======= reg display =======
+name = F
+content:
+  - (E)
+  - id
+  - num
 ======= display end =======
 ======= Grammar display end =======

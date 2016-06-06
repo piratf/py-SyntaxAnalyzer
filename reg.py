@@ -19,6 +19,8 @@ class Reg(object):
         super(Reg, self).__init__()
         self.name = str(name)
         self.contents = contents
+        self.first = set()
+        self.follow = set()
         self.sort_contents()
     
     def display(self):
@@ -79,5 +81,4 @@ class Reg(object):
                 self.contents.append(prefix + new_name)
                 new_reg_list.append(Reg(new_name, new_content))
         return new_reg_list    
-
 

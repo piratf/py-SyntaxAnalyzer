@@ -28,6 +28,7 @@ if __name__ == "__main__":
     # grammar.remove_direct_left_recursion()
     grammar.remove_indirect_left_recursion()
     grammar.extract_left_factor()
+    grammar.get_first_set()
     sys.stdout = open("output.txt", "w")
     grammar.display()
     sys.stdout = sys.__stdout__

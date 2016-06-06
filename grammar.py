@@ -34,7 +34,7 @@ class Grammar(object):
         old_contents = [x + name for x in reg.contents if not x.startswith(reg.name)]
         if (len(contents) > 0 and len(old_contents) > 0):
             contents.append(Config.null)
-            self.regs.append(Reg(name, contents))
+            self.regs.insert(pos + 1, Reg(name, contents))
             reg.contents = old_contents
         elif (len(contents) > 0 and len(old_contents) <= 0):
             raise RegError("this reg can't be processed. - {}".format(reg));
@@ -43,11 +43,15 @@ class Grammar(object):
     def remove_indirect_left_recursion(self):
         for i in range(1, len(self.regs) + 1):
             for j in range(0, i):
+                # if i not out of range
                 if (i < len(self.regs)):
+                    # get ai and aj
                     ai = self.regs[i]
                     aj = self.regs[j]
-                    deal = ai.get_pos_list_if_startwith_prefix(aj.name)
+                    
+                    # get each postion which start with aj's name
                     for x in ai.get_pos_list_if_startwith_prefix(aj.name):
+                        # replace them through each content from aj
                         [ai.contents.append(jcontent + ai.get_the_str_after_this_head[x, aj.name]) for jcontent in aj.contents]
                         del ai[x]
                     self.remove_direct_left_recursion(i)
@@ -60,3 +64,14 @@ class Grammar(object):
             [new_reg_list.append(x) for x in reg.extract_left_factor()]
         [self.regs.append(x) for x in new_reg_list]
                 
+    def get_first_set(self):
+        name_set = set([reg.name for reg in self.regs])
+        print (name_set)
+        for reg in sorted(self.regs, key=lambda x: x.name, reverse=True):
+            reg.first = first(reg.name, name_set)
+
+    # todo: the string or change to list
+    def first(self, string, name_set):
+        if (string in name_set):
+                 
+

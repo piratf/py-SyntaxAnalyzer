@@ -1,58 +1,145 @@
 ======= Grammar display ===========
-count: 3
+count: 4
+======= reg display =======
+name = L
+content:
+  - ['E', ';', 'L']
+  - ['\\e']
+======= display end =======
 ======= reg display =======
 name = E
 content:
   - ['E', '+', 'T']
+  - ['E', '-', 'T']
   - ['T']
 ======= display end =======
 ======= reg display =======
 name = T
 content:
   - ['T', '*', 'F']
+  - ['T', '/', 'F']
+  - ['T', 'mod', 'F']
   - ['F']
 ======= display end =======
 ======= reg display =======
 name = F
 content:
   - ['(', 'E', ')']
-  - ['-', 'F']
   - ['id']
+  - ['num']
 ======= display end =======
 ======= Grammar display end =======
 
-0 1
+before direct
 ======= reg display =======
 name = E
 content:
   - ['E', '+', 'T']
+  - ['E', '-', 'T']
   - ['T']
 ======= display end =======
-[['E', '+', 'T'], ['T']]
-[['E', '+', 'T'], ['T']]
-0 2
+modify in direct 
+after direct
 ======= reg display =======
 name = E
 content:
   - ['T', 'E`']
 ======= display end =======
-[['T', 'E`']]
-[['T', 'E`']]
-1 2
+before direct
 ======= reg display =======
 name = T
 content:
   - ['T', '*', 'F']
+  - ['T', '/', 'F']
+  - ['T', 'mod', 'F']
   - ['F']
 ======= display end =======
-[['T', '*', 'F'], ['F']]
-[['T', '*', 'F'], ['F']]
+modify in direct 
+after direct
+======= reg display =======
+name = T
+content:
+  - ['F', 'T`']
+======= display end =======
+before direct
+======= reg display =======
+name = T
+content:
+  - ['F', 'T`']
+======= display end =======
+after direct
+======= reg display =======
+name = T
+content:
+  - ['F', 'T`']
+======= display end =======
+before direct
+======= reg display =======
+name = F
+content:
+  - ['(', 'E', ')']
+  - ['id']
+  - ['num']
+======= display end =======
+after direct
+======= reg display =======
+name = F
+content:
+  - ['(', 'E', ')']
+  - ['id']
+  - ['num']
+======= display end =======
+before direct
+======= reg display =======
+name = F
+content:
+  - ['(', 'E', ')']
+  - ['id']
+  - ['num']
+======= display end =======
+after direct
+======= reg display =======
+name = F
+content:
+  - ['(', 'E', ')']
+  - ['id']
+  - ['num']
+======= display end =======
+before direct
+======= reg display =======
+name = F
+content:
+  - ['(', 'E', ')']
+  - ['id']
+  - ['num']
+======= display end =======
+after direct
+======= reg display =======
+name = F
+content:
+  - ['(', 'E', ')']
+  - ['id']
+  - ['num']
+======= display end =======
 ======= Grammar display ===========
-count: 3
+count: 6
+======= reg display =======
+name = L
+content:
+  - ['E', ';', 'L']
+  - ['\\e']
+======= display end =======
 ======= reg display =======
 name = E
 content:
-  - ['T', 'E`', 'E`']
+  - ['T', 'E`']
+======= display end =======
+======= reg display =======
+name = E`
+content:
+  - ['+', 'T', 'E`']
+  - ['-', 'T', 'E`']
+  - ['\\e']
 ======= display end =======
 ======= reg display =======
 name = T
@@ -60,11 +147,19 @@ content:
   - ['F', 'T`']
 ======= display end =======
 ======= reg display =======
+name = T`
+content:
+  - ['*', 'F', 'T`']
+  - ['/', 'F', 'T`']
+  - ['mod', 'F', 'T`']
+  - ['\\e']
+======= display end =======
+======= reg display =======
 name = F
 content:
   - ['(', 'E', ')']
-  - ['-', 'F']
   - ['id']
+  - ['num']
 ======= display end =======
 ======= Grammar display end =======
 

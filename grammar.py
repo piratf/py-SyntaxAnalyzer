@@ -11,7 +11,7 @@ class Grammar(object):
     def __init__(self, regs):
         super(Grammar, self).__init__()
         self.regs = regs
-        self.temp = []
+        self.temp = {}
 
     def add(self, reg):
         self.regs.append(reg)
@@ -28,46 +28,46 @@ class Grammar(object):
     # remove direct left recursion from grammar
     def remove_direct_left_recursion(self, pos):
         reg = self.regs[pos]
-        # name of new reg which has `
-        name = reg.name + '`'
-        # contents of new reg
-        contents = [x.append(name) for x in reg.get_str_list_after_my_head()]
-        old_contents = [x.append(name) for x in [x for x in reg.contents if not x[0] == reg.name]]
-        
-        if (len(contents) > 0 and len(old_contents) > 0):
-            contents.append(Config.null)
-            self.temp.append(pos + 1, Reg(name, contents))
-            reg.contents = old_contents
-        elif (len(contents) > 0 and len(old_contents) <= 0):
+        new_name = reg.name + '`'
+        new_contents = [x for x in reg.get_str_list_after_my_head()]
+        [x.append(new_name) for x in new_contents]
+        old_contents = [x[:] for x in reg.contents if len(x) > 0 and x[0] != reg.name]
+        [x.append(new_name) for x in old_contents]
+
+        if (len(new_contents) > 0 and len(old_contents) > 0):
+            print ("modify in direct ")
+            # todo
+            new_contents.append([])
+            reg = Reg(new_name, new_contents)
+            self.temp[pos + 1] = reg
+            self.regs[pos].contents = old_contents
+        elif (len(new_contents) > 0 and len(old_contents) <= 0):
             raise RegError("this reg can't be processed. - {}".format(reg));
 
     # remove Indirect left recursion from grammar
     def remove_indirect_left_recursion(self):
-        for i in range(0, len(self.regs)):
-            for j in range(i + 1, len(self.regs)):
-                print (i, j)
-                # if j not out of range
-                if (j < len(self.regs)):
-                    # get ai and aj
+        for i in range(1, len(self.regs) + 1):
+            for j in range(0, i):
+                if (i < len(self.regs)):
                     ai = self.regs[i]
                     aj = self.regs[j]
-
-                    # get each postion which start with aj's name
                     for x in ai.get_pos_list_if_startwith_prefix(aj.name):
-                        # replace them through each content from aj
-                        for jcontent in aj.contents:
-                            temp = jcontent
-                            tail = ai.get_the_str_after_this_head(x, aj.name)
-                            if (len(tail) < 1):
-                                continue
-                            else:
-                                temp.extend(tail)
-                                ai.contents.append(temp)
-                                del ai.contents[x]
+                        tail = ai.get_the_str_after_its_head(x)
+                        if (len(tail) > 0):
+                            for jcontent in aj.contents:
+                                jc = jcontent[:]
+                                jc.extend(tail)
+                                ai.contents.append(jc)
+                            del ai.contents[x]
+                    print ("before direct")
+                    ai.sort_contents()
+                    ai.display()
                     self.remove_direct_left_recursion(i)
+                    print ("after direct")
+                    ai.display()
                 else:
-                    pass
                     self.remove_direct_left_recursion(j)
+        [self.regs.insert(index, reg) for index, reg in sorted(self.temp.items(), reverse=True)]
 
     def extract_left_factor(self):
         new_reg_list = []
@@ -77,7 +77,6 @@ class Grammar(object):
                 
     def get_first_set(self):
         name_set = set([reg.name for reg in self.regs])
-        print (name_set)
         for reg in sorted(self.regs, key=lambda x: x.name, reverse=True):
             reg.first = first(reg.name, name_set)
 

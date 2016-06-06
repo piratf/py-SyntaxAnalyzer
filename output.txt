@@ -1,41 +1,70 @@
 ======= Grammar display ===========
-count: 6
-======= reg display =======
-name = L
-content:
-  - E;L
-  - \e
-======= display end =======
+count: 3
 ======= reg display =======
 name = E
 content:
-  - TE`
-======= display end =======
-======= reg display =======
-name = E`
-content:
-  - +TE`
-  - -TE`
-  - \e
+  - ['E', '+', 'T']
+  - ['T']
 ======= display end =======
 ======= reg display =======
 name = T
 content:
-  - FT`
-======= display end =======
-======= reg display =======
-name = T`
-content:
-  - *FT`
-  - /FT`
-  - modFT`
-  - \e
+  - ['T', '*', 'F']
+  - ['F']
 ======= display end =======
 ======= reg display =======
 name = F
 content:
-  - (E)
-  - id
-  - num
+  - ['(', 'E', ')']
+  - ['-', 'F']
+  - ['id']
 ======= display end =======
 ======= Grammar display end =======
+
+0 1
+======= reg display =======
+name = E
+content:
+  - ['E', '+', 'T']
+  - ['T']
+======= display end =======
+[['E', '+', 'T'], ['T']]
+[['E', '+', 'T'], ['T']]
+0 2
+======= reg display =======
+name = E
+content:
+  - ['T', 'E`']
+======= display end =======
+[['T', 'E`']]
+[['T', 'E`']]
+1 2
+======= reg display =======
+name = T
+content:
+  - ['T', '*', 'F']
+  - ['F']
+======= display end =======
+[['T', '*', 'F'], ['F']]
+[['T', '*', 'F'], ['F']]
+======= Grammar display ===========
+count: 3
+======= reg display =======
+name = E
+content:
+  - ['T', 'E`', 'E`']
+======= display end =======
+======= reg display =======
+name = T
+content:
+  - ['F', 'T`']
+======= display end =======
+======= reg display =======
+name = F
+content:
+  - ['(', 'E', ')']
+  - ['-', 'F']
+  - ['id']
+======= display end =======
+======= Grammar display end =======
+

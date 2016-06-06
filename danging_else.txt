@@ -1,0 +1,2 @@
+S ::= iCtS | iCtSeS | a
+C ::= b

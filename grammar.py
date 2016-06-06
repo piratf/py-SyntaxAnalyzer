@@ -29,7 +29,7 @@ class Grammar(object):
         # name of new reg which has `
         name = reg.name + '`'
         # contents of new reg
-        contents = [x + name for x in reg.get_strlist_after_my_head()]
+        contents = [x + name for x in reg.get_str_list_after_my_head()]
         old_contents = [x + name for x in reg.contents if not x.startswith(reg.name)]
         if (len(contents) > 0 and len(old_contents) > 0):
             contents.append('\e')
@@ -45,8 +45,8 @@ class Grammar(object):
                 if (i < len(self.regs)):
                     ai = self.regs[i]
                     aj = self.regs[j]
-                    deal = ai.find(aj)
-                    for x in ai.find(aj):
+                    deal = ai.get_pos_list_if_startwith_prefix(aj.name)
+                    for x in ai.get_pos_list_if_startwith_prefix(aj.name):
                         [ai.contents.append(jcontent + ai.get_the_str_after_this_head[x, aj.name]) for jcontent in aj.contents]
                         del ai[x]
                     self.remove_direct_left_recursion(i)

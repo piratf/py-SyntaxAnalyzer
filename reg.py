@@ -17,7 +17,7 @@ class Reg(object):
         super(Reg, self).__init__()
         self.name = str(name)
         self.contents = contents
-        self.sortContents()
+        self.sort_contents()
     
     def display(self):
         print ("======= {} =======".format("reg display"))
@@ -28,16 +28,16 @@ class Reg(object):
         print ("======= {} =======".format("display end"))
 
     # sort by start with name
-    def sortContents(self):
+    def sort_contents(self):
         self.contents.sort(key = lambda x: x.startswith(self.name), reverse = True);
 
     # get the last part of the string which starts wich name
-    def get_strlist_after_my_head(self):
+    def get_str_list_after_my_head(self):
         return [x.replace(self.name, '', 1) for x in self.contents if x.startswith(self.name)]
 
     def get_the_str_after_this_head(self, pos, head):
         return self.contents[pos].replace(head, '', 1)
 
-    def find(self, reg):
-        return [x for x in range(0, len(self.contents)) if self.contents[x].startswith(reg.name)]
+    def get_pos_list_if_startwith_prefix(self, prefix):
+        return [x for x in range(0, len(self.contents)) if self.contents[x].startswith(prefix)]
 

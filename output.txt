@@ -1,0 +1,41 @@
+======= Grammar display ===========
+count: 6
+======= reg display =======
+name = L
+content:
+  - E;L
+  - \e
+======= display end =======
+======= reg display =======
+name = E
+content:
+  - TE`
+======= display end =======
+======= reg display =======
+name = T
+content:
+  - FT`
+======= display end =======
+======= reg display =======
+name = F
+content:
+  - (E)
+  - id
+  - num
+======= display end =======
+======= reg display =======
+name = E`
+content:
+  - +TE`
+  - -TE`
+  - \e
+======= display end =======
+======= reg display =======
+name = T`
+content:
+  - *FT`
+  - /FT`
+  - modFT`
+  - \e
+======= display end =======
+======= Grammar display end =======

@@ -1,0 +1,4 @@
+L ::= E;L | \e
+E ::= E+T | E-T | T
+T ::= T*F | T/F | TmodF | F
+F ::= (E) | id | num

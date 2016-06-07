@@ -6,7 +6,7 @@ content:
   - ['E', ';', 'L']
   - ['\\e']
 first set:
-{'num', 'id', '\\e', '('}
+{'\\e', 'id', 'num', '('}
 follow set:
 {'#'}
 ======= display end =======
@@ -15,7 +15,7 @@ name = E
 content:
   - ['T', 'E+']
 first set:
-{'num', 'id', '('}
+{'id', 'num', '('}
 follow set:
 {';', ')'}
 ======= display end =======
@@ -26,7 +26,7 @@ content:
   - ['-', 'T', 'E+']
   - ['\\e']
 first set:
-{'\\e', '+', '-'}
+{'+', '\\e', '-'}
 follow set:
 {';', ')'}
 ======= display end =======
@@ -35,9 +35,9 @@ name = T
 content:
   - ['F', 'T+']
 first set:
-{'num', 'id', '('}
+{'id', 'num', '('}
 follow set:
-{';', '+', '-', ')'}
+{'+', ')', ';', '-'}
 ======= display end =======
 ======= reg display =======
 name = T+
@@ -47,9 +47,9 @@ content:
   - ['mod', 'F', 'T+']
   - ['\\e']
 first set:
-{'*', 'mod', '/', '\\e'}
+{'/', '*', 'mod', '\\e'}
 follow set:
-{';', '+', '-', ')'}
+{'+', ')', ';', '-'}
 ======= display end =======
 ======= reg display =======
 name = F
@@ -58,13 +58,13 @@ content:
   - ['id']
   - ['num']
 first set:
-{'num', 'id', '('}
+{'id', 'num', '('}
 follow set:
-{'*', '/', ')', ';', '+', 'mod', '-'}
+{'*', ';', '-', '/', 'mod', ')', '+'}
 ======= display end =======
 ======= Grammar display end =======
 
-7
+========================== prediction table display =========================
 []                   [#]                  [(]                  [)]                  [*]                  [+]                  [-]                  [/]                  [;]                  [\e]                 [id]                 [mod]                [num]                
 [L]                  [\e]                 [E ; L]              []                   []                   []                   []                   []                   []                   [\e]                 [E ; L]              []                   [E ; L]              
 [E]                  []                   [T E+]               []                   []                   []                   []                   []                   []                   []                   [T E+]               []                   [T E+]               
@@ -72,3 +72,64 @@ follow set:
 [T]                  []                   [F T+]               []                   []                   []                   []                   []                   []                   []                   [F T+]               []                   [F T+]               
 [T+]                 []                   []                   [\e]                 [* F T+]             [\e]                 [\e]                 [/ F T+]             [\e]                 [\e]                 []                   [mod F T+]           []                   
 [F]                  []                   [( E )]              []                   []                   []                   []                   []                   []                   []                   [id]                 []                   [num]                
+========================== prediction table display end =====================
+
+====================== start analyze =========================
+top = L ip = id
+string = ['id', '+', 'id', '*', 'id', ';', '#']
+stack = ['#', 'L']
+top = E ip = id
+string = ['id', '+', 'id', '*', 'id', ';', '#']
+stack = ['#', 'L', ';', 'E']
+top = T ip = id
+string = ['id', '+', 'id', '*', 'id', ';', '#']
+stack = ['#', 'L', ';', 'E+', 'T']
+top = F ip = id
+string = ['id', '+', 'id', '*', 'id', ';', '#']
+stack = ['#', 'L', ';', 'E+', 'T+', 'F']
+top = id ip = id
+string = ['id', '+', 'id', '*', 'id', ';', '#']
+stack = ['#', 'L', ';', 'E+', 'T+', 'id']
+top = T+ ip = +
+string = ['id', '+', 'id', '*', 'id', ';', '#']
+stack = ['#', 'L', ';', 'E+', 'T+']
+top = E+ ip = +
+string = ['id', '+', 'id', '*', 'id', ';', '#']
+stack = ['#', 'L', ';', 'E+']
+top = + ip = +
+string = ['id', '+', 'id', '*', 'id', ';', '#']
+stack = ['#', 'L', ';', 'E+', 'T', '+']
+top = T ip = id
+string = ['id', '+', 'id', '*', 'id', ';', '#']
+stack = ['#', 'L', ';', 'E+', 'T']
+top = F ip = id
+string = ['id', '+', 'id', '*', 'id', ';', '#']
+stack = ['#', 'L', ';', 'E+', 'T+', 'F']
+top = id ip = id
+string = ['id', '+', 'id', '*', 'id', ';', '#']
+stack = ['#', 'L', ';', 'E+', 'T+', 'id']
+top = T+ ip = *
+string = ['id', '+', 'id', '*', 'id', ';', '#']
+stack = ['#', 'L', ';', 'E+', 'T+']
+top = * ip = *
+string = ['id', '+', 'id', '*', 'id', ';', '#']
+stack = ['#', 'L', ';', 'E+', 'T+', 'F', '*']
+top = F ip = id
+string = ['id', '+', 'id', '*', 'id', ';', '#']
+stack = ['#', 'L', ';', 'E+', 'T+', 'F']
+top = id ip = id
+string = ['id', '+', 'id', '*', 'id', ';', '#']
+stack = ['#', 'L', ';', 'E+', 'T+', 'id']
+top = T+ ip = ;
+string = ['id', '+', 'id', '*', 'id', ';', '#']
+stack = ['#', 'L', ';', 'E+', 'T+']
+top = E+ ip = ;
+string = ['id', '+', 'id', '*', 'id', ';', '#']
+stack = ['#', 'L', ';', 'E+']
+top = ; ip = ;
+string = ['id', '+', 'id', '*', 'id', ';', '#']
+stack = ['#', 'L', ';']
+top = L ip = #
+string = ['id', '+', 'id', '*', 'id', ';', '#']
+stack = ['#', 'L']
+====================== Analyze Success! =========================

@@ -5,12 +5,25 @@ __author__ = 'Piratf'
 
 from grammar import Grammar
 from config import Config
+from my_exceptions import WrongGrammar
 
 class PredictionTable(object):
     """the to dimensional sheet to analyze grammar"""
-    def __init__(self, sheet):
+    def __init__(self, grammar):
         super(PredictionTable, self).__init__()
-        self.sheet = sheet
+        self.name_set = grammar.name_set
+        self.init_sheet(grammar)
+
+    def display(self):
+        print ("========================== {} =========================".format("prediction table display"))
+        for row in self.sheet:
+            for part in row:
+                string = '[' + ' '.join(part) + ']'
+                print (string, end = ' ')
+                [print (' ', end = '') for x in range(20 - len(string))]
+            print ()
+        print ("========================== {} =====================\n".format("prediction table display end"))
+
 
     def init_sheet(self, grammar):
         string_set = set()
@@ -20,33 +33,50 @@ class PredictionTable(object):
         # print (string_set)
         # pretreatment table
         self.sheet = [[[] for x in range(len(string_set) + 1)] for x in range(len(name_list) + 1)]
-        print (len(self.sheet))
-        terminator_dict = {value : index for index, value in enumerate(sorted(string_set))}
-        name_dict = {value : index for index, value in enumerate(name_list)}
-        for k, v in terminator_dict.items():
-            self.sheet[0][v + 1].append(k)
-        for k, v in name_dict.items():
-            self.sheet[v + 1][0].append(k)
+        self.terminator_dict = {value : index + 1 for index, value in enumerate(sorted(string_set))}
+        self.name_dict = {value : index + 1 for index, value in enumerate(name_list)}
+        for k, v in self.terminator_dict.items():
+            self.sheet[0][v].append(k)
+        for k, v in self.name_dict.items():
+            self.sheet[v][0].append(k)
 
 
         for reg in grammar.regs:
-            row = name_dict[reg.name] + 1
+            row = self.name_dict[reg.name]
             for content in reg.contents:
-                for string in content:
-                    pass
-            for v in reg.first:
-                print ("v =", v)
-                self.sheet[row][terminator_dict[v] + 1].append(v)
-            if Config.null in reg.first:
-                for v in reg.follow:
-                    self.sheet[row][terminator_dict[v] + 1].append(v)
+                if content == []:
+                    content = [Config.null]
+                c_first = grammar.do_first_from_content(content)
+                [self.sheet[row][self.terminator_dict[ter]].extend(content) for ter in c_first if ter not in self.name_set]
+                if Config.null in c_first:
+                    [self.sheet[row][self.terminator_dict[v]].extend(content) for v in reg.follow if v not in self.name_set]
 
-        self.display()
+    def analyze(self, string):
+        print ("====================== {} =========================".format("start analyze"))
+        stack = ['#', self.sheet[1][0][0]]
+        cur = string.split(' ')
+        cur.append('#')
 
-    def display(self):
-        for row in self.sheet:
-            for part in row:
-                string = '[' + ' '.join(part) + ']'
-                print (string, end = ' ')
-                [print (' ', end = '') for x in range(20 - len(string))]
-            print ()
+        pos = 0
+        i = 0
+        while not (stack[-1] == '#' and cur[pos] == '#'):
+            ip = cur[pos]
+            top = stack[-1]
+            print ("top =", top, "ip =", ip)
+            print ("string =", cur)
+            print ("stack =", stack)
+            if top in self.name_set:
+                l = self.sheet[self.name_dict[top]][self.terminator_dict[ip]]
+                if len(l) < 1:
+                    raise WrongGrammar("error at {}, the production expression not matched.".format(ip))
+                stack.pop()
+                stack.extend([x for x in reversed(l) if x != Config.null])
+            else:
+                if (top == ip):
+                    pos += 1
+                    stack.pop()
+                else:
+                    raise WrongGrammar("error at {}, the top of stack not match with grammar settings".format(ip))
+
+        print ("====================== {} ========================".format("Analyze Success!"))
+                

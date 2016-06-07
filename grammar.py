@@ -148,30 +148,3 @@ class Grammar(object):
             if reg.name != reg_name:
                 reg_observer.append(reg)
 
-    def build_sheet(self):
-        string_set = set()
-        name_list = [reg.name for reg in self.regs]
-        [[string_set.update(reg.first), string_set.update(reg.follow)] for reg in self.regs]
-        # print ("string set = ")
-        # print (string_set)
-        # pretreatment table
-        self.sheet = [[[] for x in range(len(string_set) + 1)] for x in range(len(name_list) + 1)]
-        print (len(self.sheet))
-        terminator_dict = {value : index for index, value in enumerate(sorted(string_set))}
-        name_dict = {value : index for index, value in enumerate(name_list)}
-        for k, v in terminator_dict.items():
-            self.sheet[0][v + 1].append(k)
-        for k, v in name_dict.items():
-            self.sheet[v + 1][0].append(k)
-
-
-        for reg in self.regs:
-            row = name_dict[reg.name] + 1
-            for content in reg.contents:
-                if content == []:
-                    content = [Config.null]
-                c_first = self.do_first_from_content(content)
-                [self.sheet[row][terminator_dict[ter] + 1].extend(content) for ter in c_first if ter not in self.name_set]
-                if Config.null in c_first:
-                    [self.sheet[row][terminator_dict[v] + 1].extend(content) for v in reg.follow if v not in self.name_set]
-

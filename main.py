@@ -33,9 +33,9 @@ def test(filePath, ansPath):
     grammar.get_first_set()
     grammar.get_follow_set()
     grammar.display()
-    grammar.build_sheet()
-    sheet = PredictionTable(grammar.sheet)
+    sheet = PredictionTable(grammar)
     sheet.display()
+    sheet.analyze("id + id * id ;")
     # ans.display()
     # assert grammar == ans
     sys.stdout = sys.__stdout__

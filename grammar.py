@@ -112,9 +112,48 @@ class Grammar(object):
         if (string == Config.null):
             return set([Config.null])
         elif string in self.name_set:
-            return self.do_first_from_reg([reg for reg in self.regs if reg.name == string][0])
+            reg = [reg for reg in self.regs if reg.name == string][0]
+            if len(reg.first) < 1:
+                return self.do_first_from_reg(reg)
+            else:
+                return reg.first
         else:
             return set([string]);
+
+    def get_follow_set(self):
+        self.regs[0].follow.update(['#'])
+        print ("reg 0 display")
+        self.regs[0].display()
+        for reg in self.regs:
+            self.do_follow_reg(reg)
+
+    def do_follow_reg(self, reg):
+        print ("reg name =", reg.name)
+        for content in reg.contents:
+            print ("content :", content)
+            self.do_follow_content(reg.observer, reg.name, reg.first, reg.follow, content)
+
+    def do_follow_content(self, reg_observer, reg_name, reg_first, reg_follow, content):
+        for index in range(len(content) - 1):
+            print ("index =", index)
+            if content[index] in self.name_set:
+                reg = [reg for reg in self.regs if reg.name == content[index]][0]
+                print ("find the reg {} in name_set of name :".format(reg.name), reg_name)
+                [reg.add_to_follow(string) for string in self.do_first(content[index + 1]) if string != Config.null]
+                if Config.null in self.do_first(content[index + 1]):
+                    reg.follow.update(reg_follow)
+                    if reg.name != reg_name:
+                        reg_observer.append(reg)
+                print ("now the follow of reg {} is :".format(reg.name), reg.follow)
+        if len(content) > 0 and content[-1] in self.name_set:
+            reg = [reg for reg in self.regs if reg.name == content[-1]][0]
+            reg.follow.update(reg_follow)
+            if reg.name != reg_name:
+                reg_observer.append(reg)
+
+
+
+
 
 
 

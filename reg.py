@@ -21,6 +21,7 @@ class Reg(object):
         self.contents = contents
         self.first = set()
         self.follow = set()
+        self.observer = []
         self.sort_contents()
 
     def __eq__(self, other):
@@ -38,6 +39,9 @@ class Reg(object):
 
         print ("first set:")
         print (self.first)
+        print ("follow set:")
+        print (self.follow)
+
         print ("======= {} =======".format("display end"))
 
     # sort by start with name
@@ -96,3 +100,12 @@ class Reg(object):
                 new_reg_list.append(Reg(new_name, new_content))
         return new_reg_list
 
+    def add_to_follow(self, string):
+        self.follow.add(string)
+        for o in self.observer:
+            o.add_to_follow(string)
+
+    def update_follow(self, other_follow):
+        self.follow.update(other_follow)
+        for o in self.observer:
+            o.update_follow(other_follow)

@@ -1,0 +1,2 @@
+S ::= i C t S | i C t S e S | a
+C ::= b

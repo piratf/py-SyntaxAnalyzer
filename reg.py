@@ -21,7 +21,10 @@ class Reg(object):
         self.contents = contents
         self.first = set()
         self.follow = set()
-        # self.sort_contents()
+        self.sort_contents()
+
+    def __eq__(self, other):
+        return self.name == other.name and sorted(self.contents) == sorted(other.contents)
     
     def display(self):
         print ("======= {} =======".format("reg display"))
@@ -48,24 +51,26 @@ class Reg(object):
         return self.contents[pos][1:]
 
     def get_pos_list_if_startwith_prefix(self, prefix):
-        return [index for index, content in enumerate(self.contents) if len(content) > 1 and content[0] == prefix]
+        # print ("contents =", self.contents)
+        # print ("prefix =", prefix)
+        return [index for index, content in enumerate(self.contents) if len(content) >= len(prefix) and content[0:len(prefix)] == prefix]
 
     def extract_left_factor(self):
         new_reg_list = []
         for loop in range(100):
             break_flag = True
             for content in self.contents:
-                temp = []
+                book = []
                 max_cnt = 0;
-                prefix = 0
+                prefix = []
                 prefix_pos = 0
-                for index, char in enumerate(content):
-                    book = self.get_pos_list_if_startwith_prefix(content[0:index + 1])
-                    if len(book) >= max_cnt:
-                        temp = book
+                for index, string in enumerate(content):
+                    temp = self.get_pos_list_if_startwith_prefix(content[ :index + 1])
+                    if len(temp) >= max_cnt:
+                        book = temp
                         prefix = content[0: index + 1]
                         prefix_pos = index + 1
-                        max_cnt = len(book)
+                        max_cnt = len(temp)
                 if max_cnt > 1:
                     break_flag = False
                     break;
@@ -76,14 +81,15 @@ class Reg(object):
                 new_name = self.name + '`'
                 new_content = []
                 for x in sorted(book, reverse=True):
-                    # print (self.contents)
+                    # print ("prefix =", prefix)
                     # print ("del", self.contents[x])
                     if (prefix_pos >= len(self.contents[x])):
                         new_content.append([])
                     else:
-                        new_content.append(self.contents[x][len(prefix):])
+                        new_content.append(self.contents[x][prefix_pos:])
                     del self.contents[x]
-                self.contents.append(prefix + new_name)
+                prefix.append(new_name)
+                self.contents.append(prefix)
                 new_reg_list.append(Reg(new_name, new_content))
-        return new_reg_list    
+        return new_reg_list
 

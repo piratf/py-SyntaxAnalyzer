@@ -13,6 +13,9 @@ class Grammar(object):
         self.regs = regs
         self.temp = {}
 
+    def __eq__(self, other):
+        return self.regs == other.regs
+
     def add(self, reg):
         self.regs.append(reg)
 
@@ -35,8 +38,6 @@ class Grammar(object):
         [x.append(new_name) for x in old_contents]
 
         if (len(new_contents) > 0 and len(old_contents) > 0):
-            print ("modify in direct ")
-            # todo
             new_contents.append([])
             reg = Reg(new_name, new_contents)
             self.temp[pos + 1] = reg
@@ -59,21 +60,18 @@ class Grammar(object):
                                 jc.extend(tail)
                                 ai.contents.append(jc)
                             del ai.contents[x]
-                    print ("before direct")
                     ai.sort_contents()
-                    ai.display()
                     self.remove_direct_left_recursion(i)
-                    print ("after direct")
-                    ai.display()
                 else:
                     self.remove_direct_left_recursion(j)
         [self.regs.insert(index, reg) for index, reg in sorted(self.temp.items(), reverse=True)]
+        self.temp.clear()
 
     def extract_left_factor(self):
         new_reg_list = []
-        for reg in self.regs:
-            [new_reg_list.append(x) for x in reg.extract_left_factor()]
-        [self.regs.append(x) for x in new_reg_list]
+        for index, reg in enumerate(self.regs):
+            [new_reg_list.append([index + 1, x]) for x in reg.extract_left_factor()]
+        [self.regs.insert(pos, x) for pos, x in new_reg_list]
                 
     def get_first_set(self):
         name_set = set([reg.name for reg in self.regs])

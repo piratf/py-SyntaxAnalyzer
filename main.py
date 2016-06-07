@@ -9,9 +9,9 @@ from config import Config
 import sys
 
 # read regs from file
-def readGrammar():
+def readGrammar(filePath):
     regs = []
-    with open('g3.9.txt') as input:
+    with open(filePath) as input:
         lines = input.readlines();
         for line in lines:
             name, content = [x.strip() for x in line.split(Config.separator_str)]
@@ -22,16 +22,25 @@ def readGrammar():
             regs.append(Reg(name, contents))
     return Grammar(regs)
 
-if __name__ == "__main__":
-    Config.read_config()
-    grammar = readGrammar()
+def test(filePath, ansPath):
+    grammar = readGrammar(filePath)
+    ans = readGrammar(ansPath)
     sys.stdout = open("output.txt", "w")
     grammar.display()
     # grammar.remove_direct_left_recursion(0)
     grammar.remove_indirect_left_recursion()
-    # grammar.extract_left_factor()
+    grammar.extract_left_factor()
     # grammar.get_first_set()
     grammar.display()
+    ans.display()
+    assert grammar == ans
     sys.stdout = sys.__stdout__
+
+if __name__ == "__main__":
+    Config.read_config()
+    # test('g3.9.txt', 'g3.9`.txt')
+    # test('g3.8.txt', 'g3.8`.txt')
+    # test('g3.4.txt', 'g3.4`.txt')
+    test('g3.10.txt', 'g3.10`.txt')
 
     

@@ -35,6 +35,9 @@ class Reg(object):
                 print ('  -', ['\e'])
             else:
                 print ('  -',x)
+
+        print ("first set:")
+        print (self.first)
         print ("======= {} =======".format("display end"))
 
     # sort by start with name

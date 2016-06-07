@@ -74,12 +74,47 @@ class Grammar(object):
         [self.regs.insert(pos, x) for pos, x in new_reg_list]
                 
     def get_first_set(self):
-        name_set = set([reg.name for reg in self.regs])
-        for reg in sorted(self.regs, key=lambda x: x.name, reverse=True):
-            reg.first = first(reg.name, name_set)
+        self.name_set = set([reg.name for reg in self.regs])
+        for reg in reversed(self.regs):
+            reg.first.update(self.do_first_from_reg(reg))
 
     # todo: the string or change to list
-    def first(self, string, name_set):
-        if (string in name_set):
-            pass
+    def do_first_from_reg(self, reg):
+        return self.do_first_from_list(reg.contents)
+
+    def do_first_from_list(self, contents):
+        first = set()
+        for content in contents:
+            # print ("first =", first)
+            # print ("content =", content)
+            first.update(self.do_first_from_content(content))
+        return first
+
+    def do_first_from_content(self, content):
+        if len(content) < 1:
+            return set([Config.null])
+        first_content = set()
+        left = Config.null
+        for string in content:
+            right = string
+            if Config.null in self.do_first(left):
+                first_content.update(self.do_first(right))
+                # print ("first content =", first_content)
+            else:
+                return first_content
+            left = right
+        right = Config.null
+        if Config.null in self.do_first(left):
+            first_content.update(self.do_first(right))
+        return first_content
+
+    def do_first(self, string):
+        if (string == Config.null):
+            return set([Config.null])
+        elif string in self.name_set:
+            return self.do_first_from_reg([reg for reg in self.regs if reg.name == string][0])
+        else:
+            return set([string]);
+
+
 

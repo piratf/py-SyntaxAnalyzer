@@ -1,58 +1,54 @@
 ======= Grammar display ===========
-count: 2
+count: 6
 ======= reg display =======
-name = S
+name = L
 content:
-  - ['i', 'C', 't', 'S']
-  - ['i', 'C', 't', 'S', 'e', 'S']
-  - ['a']
-======= display end =======
-======= reg display =======
-name = C
-content:
-  - ['b']
-======= display end =======
-======= Grammar display end =======
-
-======= Grammar display ===========
-count: 3
-======= reg display =======
-name = S
-content:
-  - ['a']
-  - ['i', 'C', 't', 'S', 'S`']
-======= display end =======
-======= reg display =======
-name = S`
-content:
-  - ['e', 'S']
+  - ['E', ';', 'L']
   - ['\\e']
+first set:
+{'(', '\\e', 'num', 'id'}
 ======= display end =======
 ======= reg display =======
-name = C
+name = E
 content:
-  - ['b']
-======= display end =======
-======= Grammar display end =======
-
-======= Grammar display ===========
-count: 3
-======= reg display =======
-name = S
-content:
-  - ['i', 'C', 't', 'S', 'S`']
-  - ['a']
+  - ['T', 'E`']
+first set:
+{'(', 'num', 'id'}
 ======= display end =======
 ======= reg display =======
-name = S`
+name = E`
 content:
-  - ['e', 'S']
+  - ['+', 'T', 'E`']
+  - ['-', 'T', 'E`']
   - ['\\e']
+first set:
+{'\\e', '-', '+'}
 ======= display end =======
 ======= reg display =======
-name = C
+name = T
 content:
-  - ['b']
+  - ['F', 'T`']
+first set:
+{'(', 'num', 'id'}
+======= display end =======
+======= reg display =======
+name = T`
+content:
+  - ['*', 'F', 'T`']
+  - ['/', 'F', 'T`']
+  - ['mod', 'F', 'T`']
+  - ['\\e']
+first set:
+{'\\e', '*', 'mod', '/'}
+======= display end =======
+======= reg display =======
+name = F
+content:
+  - ['(', 'E', ')']
+  - ['id']
+  - ['num']
+first set:
+{'(', 'num', 'id'}
 ======= display end =======
 ======= Grammar display end =======
 

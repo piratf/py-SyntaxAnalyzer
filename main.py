@@ -23,9 +23,10 @@ def readGrammar(filePath):
             regs.append(Reg(name, contents))
     return Grammar(regs)
 
-def test(filePath, ansPath):
+def test(filePath, ansPath = None, string = None):
     grammar = readGrammar(filePath)
-    ans = readGrammar(ansPath)
+    if ansPath != None:
+        ans = readGrammar(ansPath)
     sys.stdout = open("output.txt", "w")
     # grammar.remove_direct_left_recursion(0)
     grammar.remove_indirect_left_recursion()
@@ -35,15 +36,18 @@ def test(filePath, ansPath):
     grammar.display()
     sheet = PredictionTable(grammar)
     sheet.display()
-    sheet.analyze("id + id * id ;")
+    if string != None:
+        sheet.analyze(string)
     # ans.display()
     # assert grammar == ans
     sys.stdout = sys.__stdout__
 
 if __name__ == "__main__":
     Config.read_config()
-    test('g3.9.txt', 'g3.9`.txt')
+    # for all the process
+    # test('g3.9.txt', 'g3.9`.txt', "id + id * id ;")
     # test('g3.8.txt', 'g3.8`.txt')
     # test('g3.4.txt', 'g3.4`.txt')
     # test('g3.10.txt', 'g3.10`.txt')
+    test('g3.11.txt', string = 'a b b c d e')
 

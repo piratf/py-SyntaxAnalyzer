@@ -1,135 +1,84 @@
 ======= Grammar display ===========
-count: 6
+count: 4
 ======= reg display =======
-name = L
+name = S
 content:
-  - ['E', ';', 'L']
-  - ['\\e']
+  - ['a', 'A', 'B', 'e']
 first set:
-{'\\e', 'id', 'num', '('}
+{'a'}
 follow set:
 {'#'}
 ======= display end =======
 ======= reg display =======
-name = E
+name = A
 content:
-  - ['T', 'E+']
+  - ['b', 'A+']
 first set:
-{'id', 'num', '('}
+{'b'}
 follow set:
-{';', ')'}
+{'d'}
 ======= display end =======
 ======= reg display =======
-name = E+
+name = A+
 content:
-  - ['+', 'T', 'E+']
-  - ['-', 'T', 'E+']
+  - ['b', 'c', 'A+']
   - ['\\e']
 first set:
-{'+', '\\e', '-'}
+{'\\e', 'b'}
 follow set:
-{';', ')'}
+{'d'}
 ======= display end =======
 ======= reg display =======
-name = T
+name = B
 content:
-  - ['F', 'T+']
+  - ['d']
 first set:
-{'id', 'num', '('}
+{'d'}
 follow set:
-{'+', ')', ';', '-'}
-======= display end =======
-======= reg display =======
-name = T+
-content:
-  - ['*', 'F', 'T+']
-  - ['/', 'F', 'T+']
-  - ['mod', 'F', 'T+']
-  - ['\\e']
-first set:
-{'/', '*', 'mod', '\\e'}
-follow set:
-{'+', ')', ';', '-'}
-======= display end =======
-======= reg display =======
-name = F
-content:
-  - ['(', 'E', ')']
-  - ['id']
-  - ['num']
-first set:
-{'id', 'num', '('}
-follow set:
-{'*', ';', '-', '/', 'mod', ')', '+'}
+{'e'}
 ======= display end =======
 ======= Grammar display end =======
 
 ========================== prediction table display =========================
-[]                   [#]                  [(]                  [)]                  [*]                  [+]                  [-]                  [/]                  [;]                  [\e]                 [id]                 [mod]                [num]                
-[L]                  [\e]                 [E ; L]              []                   []                   []                   []                   []                   []                   [\e]                 [E ; L]              []                   [E ; L]              
-[E]                  []                   [T E+]               []                   []                   []                   []                   []                   []                   []                   [T E+]               []                   [T E+]               
-[E+]                 []                   []                   [\e]                 []                   [+ T E+]             [- T E+]             []                   [\e]                 [\e]                 []                   []                   []                   
-[T]                  []                   [F T+]               []                   []                   []                   []                   []                   []                   []                   [F T+]               []                   [F T+]               
-[T+]                 []                   []                   [\e]                 [* F T+]             [\e]                 [\e]                 [/ F T+]             [\e]                 [\e]                 []                   [mod F T+]           []                   
-[F]                  []                   [( E )]              []                   []                   []                   []                   []                   []                   []                   [id]                 []                   [num]                
+[]                   [#]                  [\e]                 [a]                  [b]                  [d]                  [e]                  
+[S]                  []                   []                   [a A B e]            []                   []                   []                   
+[A]                  []                   []                   []                   [b A+]               []                   []                   
+[A+]                 []                   [\e]                 []                   [b c A+]             [\e]                 []                   
+[B]                  []                   []                   []                   []                   [d]                  []                   
 ========================== prediction table display end =====================
 
 ====================== start analyze =========================
-top = L ip = id
-string = ['id', '+', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L']
-top = E ip = id
-string = ['id', '+', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E']
-top = T ip = id
-string = ['id', '+', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T']
-top = F ip = id
-string = ['id', '+', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+', 'F']
-top = id ip = id
-string = ['id', '+', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+', 'id']
-top = T+ ip = +
-string = ['id', '+', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+']
-top = E+ ip = +
-string = ['id', '+', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+']
-top = + ip = +
-string = ['id', '+', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T', '+']
-top = T ip = id
-string = ['id', '+', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T']
-top = F ip = id
-string = ['id', '+', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+', 'F']
-top = id ip = id
-string = ['id', '+', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+', 'id']
-top = T+ ip = *
-string = ['id', '+', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+']
-top = * ip = *
-string = ['id', '+', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+', 'F', '*']
-top = F ip = id
-string = ['id', '+', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+', 'F']
-top = id ip = id
-string = ['id', '+', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+', 'id']
-top = T+ ip = ;
-string = ['id', '+', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+']
-top = E+ ip = ;
-string = ['id', '+', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+']
-top = ; ip = ;
-string = ['id', '+', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';']
-top = L ip = #
-string = ['id', '+', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L']
-====================== Analyze Success! =========================
+top = S ip = a
+string = ['a', 'b', 'b', 'c', 'd', 'e', '#']
+stack = ['#', 'S']
+top = a ip = a
+string = ['a', 'b', 'b', 'c', 'd', 'e', '#']
+stack = ['#', 'e', 'B', 'A', 'a']
+top = A ip = b
+string = ['a', 'b', 'b', 'c', 'd', 'e', '#']
+stack = ['#', 'e', 'B', 'A']
+top = b ip = b
+string = ['a', 'b', 'b', 'c', 'd', 'e', '#']
+stack = ['#', 'e', 'B', 'A+', 'b']
+top = A+ ip = b
+string = ['a', 'b', 'b', 'c', 'd', 'e', '#']
+stack = ['#', 'e', 'B', 'A+']
+top = b ip = b
+string = ['a', 'b', 'b', 'c', 'd', 'e', '#']
+stack = ['#', 'e', 'B', 'A+', 'c', 'b']
+top = c ip = c
+string = ['a', 'b', 'b', 'c', 'd', 'e', '#']
+stack = ['#', 'e', 'B', 'A+', 'c']
+top = A+ ip = d
+string = ['a', 'b', 'b', 'c', 'd', 'e', '#']
+stack = ['#', 'e', 'B', 'A+']
+top = B ip = d
+string = ['a', 'b', 'b', 'c', 'd', 'e', '#']
+stack = ['#', 'e', 'B']
+top = d ip = d
+string = ['a', 'b', 'b', 'c', 'd', 'e', '#']
+stack = ['#', 'e', 'd']
+top = e ip = e
+string = ['a', 'b', 'b', 'c', 'd', 'e', '#']
+stack = ['#', 'e']
+====================== Analyze Success! ========================

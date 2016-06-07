@@ -1,0 +1,3 @@
+S ::= a A B e
+A ::= b | A b c
+B ::= d

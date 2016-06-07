@@ -12,6 +12,7 @@ class Grammar(object):
         super(Grammar, self).__init__()
         self.regs = regs
         self.temp = {}
+        self.name_set = set()
 
     def __eq__(self, other):
         return self.regs == other.regs
@@ -31,7 +32,7 @@ class Grammar(object):
     # remove direct left recursion from grammar
     def remove_direct_left_recursion(self, pos):
         reg = self.regs[pos]
-        new_name = reg.name + '`'
+        new_name = reg.name + Config.suffix
         new_contents = [x for x in reg.get_str_list_after_my_head()]
         [x.append(new_name) for x in new_contents]
         old_contents = [x[:] for x in reg.contents if len(x) > 0 and x[0] != reg.name]
@@ -122,38 +123,55 @@ class Grammar(object):
 
     def get_follow_set(self):
         self.regs[0].follow.update(['#'])
-        print ("reg 0 display")
-        self.regs[0].display()
         for reg in self.regs:
             self.do_follow_reg(reg)
 
     def do_follow_reg(self, reg):
-        print ("reg name =", reg.name)
         for content in reg.contents:
-            print ("content :", content)
             self.do_follow_content(reg.observer, reg.name, reg.first, reg.follow, content)
 
     def do_follow_content(self, reg_observer, reg_name, reg_first, reg_follow, content):
         for index in range(len(content) - 1):
-            print ("index =", index)
+            # print ("index =", index)
             if content[index] in self.name_set:
                 reg = [reg for reg in self.regs if reg.name == content[index]][0]
-                print ("find the reg {} in name_set of name :".format(reg.name), reg_name)
+                # print ("find the reg {} in name_set of name :".format(reg.name), reg_name)
                 [reg.add_to_follow(string) for string in self.do_first(content[index + 1]) if string != Config.null]
                 if Config.null in self.do_first(content[index + 1]):
                     reg.follow.update(reg_follow)
                     if reg.name != reg_name:
                         reg_observer.append(reg)
-                print ("now the follow of reg {} is :".format(reg.name), reg.follow)
+                # print ("now the follow of reg {} is :".format(reg.name), reg.follow)
         if len(content) > 0 and content[-1] in self.name_set:
             reg = [reg for reg in self.regs if reg.name == content[-1]][0]
             reg.follow.update(reg_follow)
             if reg.name != reg_name:
                 reg_observer.append(reg)
 
+    def build_sheet(self):
+        string_set = set()
+        name_list = [reg.name for reg in self.regs]
+        [[string_set.update(reg.first), string_set.update(reg.follow)] for reg in self.regs]
+        # print ("string set = ")
+        # print (string_set)
+        # pretreatment table
+        self.sheet = [[[] for x in range(len(string_set) + 1)] for x in range(len(name_list) + 1)]
+        print (len(self.sheet))
+        terminator_dict = {value : index for index, value in enumerate(sorted(string_set))}
+        name_dict = {value : index for index, value in enumerate(name_list)}
+        for k, v in terminator_dict.items():
+            self.sheet[0][v + 1].append(k)
+        for k, v in name_dict.items():
+            self.sheet[v + 1][0].append(k)
 
 
-
-
-
+        for reg in self.regs:
+            row = name_dict[reg.name] + 1
+            for content in reg.contents:
+                if content == []:
+                    content = [Config.null]
+                c_first = self.do_first_from_content(content)
+                [self.sheet[row][terminator_dict[ter] + 1].extend(content) for ter in c_first if ter not in self.name_set]
+                if Config.null in c_first:
+                    [self.sheet[row][terminator_dict[v] + 1].extend(content) for v in reg.follow if v not in self.name_set]
 

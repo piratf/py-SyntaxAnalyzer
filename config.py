@@ -18,6 +18,7 @@ class Config(object):
             self.split_str = self.get_config_value(line)
             line = conf.readline()
             self.null = self.get_config_value(line)
+            self.suffix = '+'
             # print (self.null)
             # print (self.split_str)
             # print (self.separator_str)

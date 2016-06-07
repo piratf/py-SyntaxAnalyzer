@@ -85,7 +85,7 @@ class Reg(object):
             if break_flag:
                 break;
             else:
-                new_name = self.name + '`'
+                new_name = self.name + Config.suffix
                 new_content = []
                 for x in sorted(book, reverse=True):
                     # print ("prefix =", prefix)

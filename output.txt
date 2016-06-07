@@ -1,68 +1,3 @@
-reg 0 display
-======= reg display =======
-name = L
-content:
-  - ['E', ';', 'L']
-  - ['\\e']
-first set:
-{'\\e', 'num', 'id', '('}
-follow set:
-{'#'}
-======= display end =======
-reg name = L
-content : ['E', ';', 'L']
-index = 0
-find the reg E in name_set of name : L
-now the follow of reg E is : {';'}
-index = 1
-content : []
-reg name = E
-content : ['T', 'E`']
-index = 0
-find the reg T in name_set of name : E
-now the follow of reg T is : {'+', ';', '-'}
-reg name = E`
-content : ['+', 'T', 'E`']
-index = 0
-index = 1
-find the reg T in name_set of name : E`
-now the follow of reg T is : {'+', ';', '-'}
-content : ['-', 'T', 'E`']
-index = 0
-index = 1
-find the reg T in name_set of name : E`
-now the follow of reg T is : {'+', ';', '-'}
-content : []
-reg name = T
-content : ['F', 'T`']
-index = 0
-find the reg F in name_set of name : T
-now the follow of reg F is : {'mod', '*', '-', '/', '+', ';'}
-reg name = T`
-content : ['*', 'F', 'T`']
-index = 0
-index = 1
-find the reg F in name_set of name : T`
-now the follow of reg F is : {'mod', '*', '-', '/', '+', ';'}
-content : ['/', 'F', 'T`']
-index = 0
-index = 1
-find the reg F in name_set of name : T`
-now the follow of reg F is : {'mod', '*', '-', '/', '+', ';'}
-content : ['mod', 'F', 'T`']
-index = 0
-index = 1
-find the reg F in name_set of name : T`
-now the follow of reg F is : {'mod', '*', '-', '/', '+', ';'}
-content : []
-reg name = F
-content : ['(', 'E', ')']
-index = 0
-index = 1
-find the reg E in name_set of name : F
-now the follow of reg E is : {';', ')'}
-content : ['id']
-content : ['num']
 ======= Grammar display ===========
 count: 6
 ======= reg display =======
@@ -71,50 +6,50 @@ content:
   - ['E', ';', 'L']
   - ['\\e']
 first set:
-{'\\e', 'num', 'id', '('}
+{'num', 'id', '\\e', '('}
 follow set:
 {'#'}
 ======= display end =======
 ======= reg display =======
 name = E
 content:
-  - ['T', 'E`']
+  - ['T', 'E+']
 first set:
 {'num', 'id', '('}
 follow set:
 {';', ')'}
 ======= display end =======
 ======= reg display =======
-name = E`
+name = E+
 content:
-  - ['+', 'T', 'E`']
-  - ['-', 'T', 'E`']
+  - ['+', 'T', 'E+']
+  - ['-', 'T', 'E+']
   - ['\\e']
 first set:
-{'+', '\\e', '-'}
+{'\\e', '+', '-'}
 follow set:
 {';', ')'}
 ======= display end =======
 ======= reg display =======
 name = T
 content:
-  - ['F', 'T`']
+  - ['F', 'T+']
 first set:
 {'num', 'id', '('}
 follow set:
-{'+', ';', ')', '-'}
+{';', '+', '-', ')'}
 ======= display end =======
 ======= reg display =======
-name = T`
+name = T+
 content:
-  - ['*', 'F', 'T`']
-  - ['/', 'F', 'T`']
-  - ['mod', 'F', 'T`']
+  - ['*', 'F', 'T+']
+  - ['/', 'F', 'T+']
+  - ['mod', 'F', 'T+']
   - ['\\e']
 first set:
-{'/', '*', '\\e', 'mod'}
+{'*', 'mod', '/', '\\e'}
 follow set:
-{'+', ';', ')', '-'}
+{';', '+', '-', ')'}
 ======= display end =======
 ======= reg display =======
 name = F
@@ -125,7 +60,15 @@ content:
 first set:
 {'num', 'id', '('}
 follow set:
-{'mod', '*', '-', '/', '+', ';', ')'}
+{'*', '/', ')', ';', '+', 'mod', '-'}
 ======= display end =======
 ======= Grammar display end =======
 
+7
+[]                   [#]                  [(]                  [)]                  [*]                  [+]                  [-]                  [/]                  [;]                  [\e]                 [id]                 [mod]                [num]                
+[L]                  [\e]                 [E ; L]              []                   []                   []                   []                   []                   []                   [\e]                 [E ; L]              []                   [E ; L]              
+[E]                  []                   [T E+]               []                   []                   []                   []                   []                   []                   []                   [T E+]               []                   [T E+]               
+[E+]                 []                   []                   [\e]                 []                   [+ T E+]             [- T E+]             []                   [\e]                 [\e]                 []                   []                   []                   
+[T]                  []                   [F T+]               []                   []                   []                   []                   []                   []                   []                   [F T+]               []                   [F T+]               
+[T+]                 []                   []                   [\e]                 [* F T+]             [\e]                 [\e]                 [/ F T+]             [\e]                 [\e]                 []                   [mod F T+]           []                   
+[F]                  []                   [( E )]              []                   []                   []                   []                   []                   []                   []                   [id]                 []                   [num]                

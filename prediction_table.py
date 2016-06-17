@@ -51,7 +51,36 @@ class PredictionTable(object):
                 if Config.null in c_first:
                     [self.sheet[row][self.terminator_dict[v]].extend(content) for v in reg.follow if v not in self.name_set]
 
-    def analyze(self, string):
+    def analyze(self, lexical):
+        print ("====================== {} =========================".format("start analyze"))
+        stack = ['#', self.sheet[1][0][0]]
+        cur = [c.tag for c in lexical.result_list]
+        cur.append('#')
+
+        pos = 0
+        i = 0
+        while not (stack[-1] == '#' and cur[pos] == '#'):
+            ip = cur[pos]
+            top = stack[-1]
+            print ("top =", top, "ip =", ip)
+            print ("string =", cur)
+            print ("stack =", stack)
+            if top in self.name_set:
+                l = self.sheet[self.name_dict[top]][self.terminator_dict[ip]]
+                if len(l) < 1:
+                    raise WrongGrammar("error at {}, the production expression not matched.".format(ip))
+                stack.pop()
+                stack.extend([x for x in reversed(l) if x != Config.null])
+            else:
+                if (top == ip):
+                    pos += 1
+                    stack.pop()
+                else:
+                    raise WrongGrammar("error at {}, the top of stack not match with grammar settings".format(ip))
+
+        print ("====================== {} ========================".format("Analyze Success!"))
+
+    def analyze_string(self, string):
         print ("====================== {} =========================".format("start analyze"))
         stack = ['#', self.sheet[1][0][0]]
         cur = string.split(' ')
@@ -79,4 +108,4 @@ class PredictionTable(object):
                     raise WrongGrammar("error at {}, the top of stack not match with grammar settings".format(ip))
 
         print ("====================== {} ========================".format("Analyze Success!"))
-                
+

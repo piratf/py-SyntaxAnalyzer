@@ -113,7 +113,7 @@ class PredictionTable(object):
                     continue
 
         if self.error_cnt == 0:
-            print ('====================== {} ========================".format("Analyze Success!')
+            print ('====================== {} ========================'.format('Analyze Success!'))
         else:
             print ('================== Analyze completed, {} error{} found =========='.format(self.error_cnt, '' if self.error_cnt < 2 else 's'))
 

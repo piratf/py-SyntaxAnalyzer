@@ -28,7 +28,7 @@ def test(filePath, ansPath=None, string=None, lexical=None):
     grammar = readGrammar(filePath)
     if ansPath != None:
         ans = readGrammar(ansPath)
-    sys.stdout = open("output.txt", "w")
+    sys.stdout = open("output.txt", "a+")
     # grammar.remove_direct_left_recursion(0)
     grammar.remove_indirect_left_recursion()
     grammar.extract_left_factor()
@@ -39,8 +39,12 @@ def test(filePath, ansPath=None, string=None, lexical=None):
     sheet.display()
 
     if lexical is not None:
-        lexical.display()
-        sheet.analyze(lexical)
+        # if result is empty, it means lexical analyze was failed, then pass the next step
+        if len(lr.result_list) == 0:
+            pass
+        else:
+            lexical.display()
+            sheet.analyze(lexical)
 
     if string is not None:
         sheet.analyze_string(string)
@@ -53,7 +57,7 @@ if __name__ == "__main__":
     lr = LexicalResult()
     lr.init_from_file('result.txt', 'parseCode.txt')
     # for all the process
-    test('g3.9.txt', 'g3.9`.txt', "id + id * id ;")
+    # test('g3.9.txt', 'g3.9`.txt', "id + id * id ;")
     # test('g3.8.txt', 'g3.8`.txt')
     # test('g3.4.txt', 'g3.4`.txt')
     # test('g3.10.txt', 'g3.10`.txt')

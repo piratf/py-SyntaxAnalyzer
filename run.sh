@@ -1,7 +1,6 @@
 cd ../LexicalAnalyzer
 make run
 cd -
-ls
-cp ../LexicalAnalyzer/result.txt . -f
+cp ../LexicalAnalyzer/result.txt ../LexicalAnalyzer/parseCode.txt . -f
 python3 main.py
 subl output.txt

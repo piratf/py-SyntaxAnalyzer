@@ -20,9 +20,11 @@ class LexicalResult(object):
     def __init__(self):
         super(LexicalResult, self).__init__()
 
-    def init_from_file(self, file_path):
+    def init_from_file(self, result_file_path, code_file_path):
+        with open(code_file_path) as f:
+            self.code_line_list = [line for line in f]
         self.result_list = []
-        with open(file_path) as f:
+        with open(result_file_path) as f:
             line_list = [line.strip() for line in [line for line in f]]
         for line in line_list:
             data = line.split(' ');

@@ -15,14 +15,14 @@ class PredictionTable(object):
         self.init_sheet(grammar)
 
     def display(self):
-        print ("========================== {} =========================".format("prediction table display"))
+        print ('========================== {} ========================='.format('prediction table display'))
         for row in self.sheet:
             for part in row:
                 string = '[' + ' '.join(part) + ']'
                 print (string, end = ' ')
-                [print (' ', end = '') for x in range(20 - len(string))]
+                print (' '.join(['' for x in range(15 - len(string))]), end = '')
             print ()
-        print ("========================== {} =====================\n".format("prediction table display end"))
+        print ('========================== {} =====================\n'.format('prediction table display end'))
 
 
     def init_sheet(self, grammar):
@@ -51,10 +51,26 @@ class PredictionTable(object):
                 if Config.null in c_first:
                     [self.sheet[row][self.terminator_dict[v]].extend(content) for v in reg.follow if v not in self.name_set]
 
+    def deal_error(self, lexical, ip, pos):
+        self.error_cnt += 1
+        lr_list = lexical.result_list
+        print ('================ catch error ================')
+        print ("error at {}, the production expression not matched.".format(ip))
+        line = lexical.code_line_list[lr_list[pos].line_num].strip()
+        print ('at line {:<3} column {:<3}:'.format(lr_list[pos].line_num + 1, lr_list[pos].start_pos), line)
+        print ('                        ' + ' '.join(['' for x in range(lr_list[pos].start_pos + 1)]), end='')
+        print ('^', end='')
+        print (' '.join(['' for x in range(len(line) - lr_list[pos].start_pos)]))
+
+        print ('---------------------------------------------')
+
+
     def analyze(self, lexical):
-        print ("====================== {} =========================".format("start analyze"))
+        self.error_cnt = 0;
+        print ('====================== {} ========================='.format("start analyze"))
         stack = ['#', self.sheet[1][0][0]]
-        cur = [c.tag for c in lexical.result_list]
+        lr_list = lexical.result_list
+        cur = [c.tag for c in lr_list]
         cur.append('#')
 
         pos = 0
@@ -63,12 +79,28 @@ class PredictionTable(object):
             ip = cur[pos]
             top = stack[-1]
             print ("top =", top, "ip =", ip)
-            print ("string =", cur)
+            print ("string =", cur[pos:])
             print ("stack =", stack)
             if top in self.name_set:
-                l = self.sheet[self.name_dict[top]][self.terminator_dict[ip]]
+                try:
+                    l = self.sheet[self.name_dict[top]][self.terminator_dict[ip]]
+                except KeyError as e:
+                    self.deal_error(lexical, ip, pos)
+                    pos += 1
+                    continue
+
+                else:
+                    pass
+                finally:
+                    pass
                 if len(l) < 1:
-                    raise WrongGrammar("error at {}, the production expression not matched.".format(ip))
+                    if ip == '#':
+                        print ('============= no more lexicals, system logout ==============')
+                        print ('============= Unrecoverable error ==========================')
+                        return;
+                    self.deal_error(lexical, ip, pos)
+                    pos += 1
+                    continue
                 stack.pop()
                 stack.extend([x for x in reversed(l) if x != Config.null])
             else:
@@ -76,9 +108,14 @@ class PredictionTable(object):
                     pos += 1
                     stack.pop()
                 else:
-                    raise WrongGrammar("error at {}, the top of stack not match with grammar settings".format(ip))
+                    self.deal_error(lexical, ip, pos)
+                    pos += 1
+                    continue
 
-        print ("====================== {} ========================".format("Analyze Success!"))
+        if self.error_cnt == 0:
+            print ('====================== {} ========================".format("Analyze Success!')
+        else:
+            print ('================== Analyze completed, {} error{} found =========='.format(self.error_cnt, '' if self.error_cnt < 2 else 's'))
 
     def analyze_string(self, string):
         print ("====================== {} =========================".format("start analyze"))
@@ -92,7 +129,7 @@ class PredictionTable(object):
             ip = cur[pos]
             top = stack[-1]
             print ("top =", top, "ip =", ip)
-            print ("string =", cur)
+            print ("string =", cur[pos:])
             print ("stack =", stack)
             if top in self.name_set:
                 l = self.sheet[self.name_dict[top]][self.terminator_dict[ip]]

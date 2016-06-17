@@ -1,4 +1,5 @@
-L ::= E ; L | \e
-E ::= E + T | E - T | E = T | T
+L ::= EXP ; L | \e
+EXP ::= EXP + T | EXP - T | EXP = T | T
 T ::= T * F | T / F | T mod F | F
-F ::= ( E ) | id | value
+F ::= ( EXP ) | id | NUM
+NUM ::= num | num . num | num E num

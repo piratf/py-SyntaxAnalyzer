@@ -1,32 +1,33 @@
 ======= Grammar display ===========
-count: 6
+count: 8
 ======= reg display =======
 name = L
 content:
-  - ['E', ';', 'L']
+  - ['EXP', ';', 'L']
   - ['\\e']
 first set:
-{'\\e', 'id', 'num', '('}
+{'\\e', 'id', '(', 'num'}
 follow set:
 {'#'}
 ======= display end =======
 ======= reg display =======
-name = E
+name = EXP
 content:
-  - ['T', 'E+']
+  - ['T', 'EXP+']
 first set:
-{'id', 'num', '('}
+{'id', '(', 'num'}
 follow set:
 {')', ';'}
 ======= display end =======
 ======= reg display =======
-name = E+
+name = EXP+
 content:
-  - ['+', 'T', 'E+']
-  - ['-', 'T', 'E+']
+  - ['+', 'T', 'EXP+']
+  - ['-', 'T', 'EXP+']
+  - ['=', 'T', 'EXP+']
   - ['\\e']
 first set:
-{'\\e', '+', '-'}
+{'\\e', '-', '=', '+'}
 follow set:
 {')', ';'}
 ======= display end =======
@@ -35,9 +36,9 @@ name = T
 content:
   - ['F', 'T+']
 first set:
-{'id', 'num', '('}
+{'id', '(', 'num'}
 follow set:
-{')', '+', '-', ';'}
+{')', '-', ';', '=', '+'}
 ======= display end =======
 ======= reg display =======
 name = T+
@@ -47,149 +48,155 @@ content:
   - ['mod', 'F', 'T+']
   - ['\\e']
 first set:
-{'*', '\\e', '/', 'mod'}
+{'mod', '\\e', '*', '/'}
 follow set:
-{')', '+', '-', ';'}
+{')', '-', ';', '=', '+'}
 ======= display end =======
 ======= reg display =======
 name = F
 content:
-  - ['(', 'E', ')']
+  - ['(', 'EXP', ')']
   - ['id']
-  - ['num']
+  - ['NUM']
 first set:
-{'id', 'num', '('}
+{'id', '(', 'num'}
 follow set:
-{'*', '/', '+', ';', '-', 'mod', ')'}
+{'*', '-', '/', 'mod', ')', ';', '=', '+'}
+======= display end =======
+======= reg display =======
+name = NUM
+content:
+  - ['num', 'NUM+']
+first set:
+{'num'}
+follow set:
+{'*', '-', '/', 'mod', ')', ';', '=', '+'}
+======= display end =======
+======= reg display =======
+name = NUM+
+content:
+  - ['E', 'num']
+  - ['.', 'num']
+  - ['\\e']
+first set:
+{'E', '\\e', '.'}
+follow set:
+{'*', '-', '/', 'mod', ')', ';', '=', '+'}
 ======= display end =======
 ======= Grammar display end =======
 
 ========================== prediction table display =========================
-[]                   [#]                  [(]                  [)]                  [*]                  [+]                  [-]                  [/]                  [;]                  [\e]                 [id]                 [mod]                [num]                
-[L]                  [\e]                 [E ; L]              []                   []                   []                   []                   []                   []                   [\e]                 [E ; L]              []                   [E ; L]              
-[E]                  []                   [T E+]               []                   []                   []                   []                   []                   []                   []                   [T E+]               []                   [T E+]               
-[E+]                 []                   []                   [\e]                 []                   [+ T E+]             [- T E+]             []                   [\e]                 [\e]                 []                   []                   []                   
-[T]                  []                   [F T+]               []                   []                   []                   []                   []                   []                   []                   [F T+]               []                   [F T+]               
-[T+]                 []                   []                   [\e]                 [* F T+]             [\e]                 [\e]                 [/ F T+]             [\e]                 [\e]                 []                   [mod F T+]           []                   
-[F]                  []                   [( E )]              []                   []                   []                   []                   []                   []                   []                   [id]                 []                   [num]                
+[]             [#]            [(]            [)]            [*]            [+]            [-]            [.]            [/]            [;]            [=]            [E]            [\e]           [id]           [mod]          [num]          
+[L]            [\e]           [EXP ; L]      []             []             []             []             []             []             []             []             []             [\e]           [EXP ; L]      []             [EXP ; L]      
+[EXP]          []             [T EXP+]       []             []             []             []             []             []             []             []             []             []             [T EXP+]       []             [T EXP+]       
+[EXP+]         []             []             [\e]           []             [+ T EXP+]     [- T EXP+]     []             []             [\e]           [= T EXP+]     []             [\e]           []             []             []             
+[T]            []             [F T+]         []             []             []             []             []             []             []             []             []             []             [F T+]         []             [F T+]         
+[T+]           []             []             [\e]           [* F T+]       [\e]           [\e]           []             [/ F T+]       [\e]           [\e]           []             [\e]           []             [mod F T+]     []             
+[F]            []             [( EXP )]      []             []             []             []             []             []             []             []             []             []             [id]           []             [NUM]          
+[NUM]          []             []             []             []             []             []             []             []             []             []             []             []             []             []             [num NUM+]     
+[NUM+]         []             []             [\e]           [\e]           [\e]           [\e]           [. num]        [\e]           [\e]           [\e]           [E num]        [\e]           []             [\e]           []             
 ========================== prediction table display end =====================
 
-line 0   : <   0 :   4 > - ( id : 123 )
+line 0   : <   0 :   4 > - ( num : 123 )
 line 0   : <   4 :   6 > - ( + : + )
-line 0   : <   6 :  10 > - ( id : 123 )
+line 0   : <   6 :  10 > - ( num : 123 )
 line 0   : <  10 :  12 > - ( * : * )
-line 0   : <  12 :  16 > - ( id : 123 )
+line 0   : <  12 :  16 > - ( num : 123 )
 line 0   : <  15 :  16 > - ( ; : ; )
-line 1   : <   0 :   4 > - ( id : 123 )
-line 1   : <   4 :   6 > - ( * : * )
-line 1   : <   6 :  10 > - ( id : 123 )
-line 1   : <  10 :  12 > - ( * : * )
-line 1   : <  12 :  16 > - ( id : 123 )
-line 1   : <  15 :  16 > - ( ; : ; )
+line 1   : <   0 :   4 > - ( num : 123 )
 ====================== start analyze =========================
-top = L ip = id
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
+top = L ip = num
+string = ['num', '+', 'num', '*', 'num', ';', 'num', '#']
 stack = ['#', 'L']
-top = E ip = id
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E']
-top = T ip = id
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T']
-top = F ip = id
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+', 'F']
-top = id ip = id
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+', 'id']
+top = EXP ip = num
+string = ['num', '+', 'num', '*', 'num', ';', 'num', '#']
+stack = ['#', 'L', ';', 'EXP']
+top = T ip = num
+string = ['num', '+', 'num', '*', 'num', ';', 'num', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T']
+top = F ip = num
+string = ['num', '+', 'num', '*', 'num', ';', 'num', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'F']
+top = NUM ip = num
+string = ['num', '+', 'num', '*', 'num', ';', 'num', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'NUM']
+top = num ip = num
+string = ['num', '+', 'num', '*', 'num', ';', 'num', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'NUM+', 'num']
+top = NUM+ ip = +
+string = ['+', 'num', '*', 'num', ';', 'num', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'NUM+']
 top = T+ ip = +
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+']
-top = E+ ip = +
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+']
+string = ['+', 'num', '*', 'num', ';', 'num', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+']
+top = EXP+ ip = +
+string = ['+', 'num', '*', 'num', ';', 'num', '#']
+stack = ['#', 'L', ';', 'EXP+']
 top = + ip = +
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T', '+']
-top = T ip = id
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T']
-top = F ip = id
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+', 'F']
-top = id ip = id
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+', 'id']
+string = ['+', 'num', '*', 'num', ';', 'num', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T', '+']
+top = T ip = num
+string = ['num', '*', 'num', ';', 'num', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T']
+top = F ip = num
+string = ['num', '*', 'num', ';', 'num', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'F']
+top = NUM ip = num
+string = ['num', '*', 'num', ';', 'num', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'NUM']
+top = num ip = num
+string = ['num', '*', 'num', ';', 'num', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'NUM+', 'num']
+top = NUM+ ip = *
+string = ['*', 'num', ';', 'num', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'NUM+']
 top = T+ ip = *
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+']
+string = ['*', 'num', ';', 'num', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+']
 top = * ip = *
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+', 'F', '*']
-top = F ip = id
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+', 'F']
-top = id ip = id
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+', 'id']
+string = ['*', 'num', ';', 'num', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'F', '*']
+top = F ip = num
+string = ['num', ';', 'num', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'F']
+top = NUM ip = num
+string = ['num', ';', 'num', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'NUM']
+top = num ip = num
+string = ['num', ';', 'num', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'NUM+', 'num']
+top = NUM+ ip = ;
+string = [';', 'num', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'NUM+']
 top = T+ ip = ;
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+']
-top = E+ ip = ;
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+']
+string = [';', 'num', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+']
+top = EXP+ ip = ;
+string = [';', 'num', '#']
+stack = ['#', 'L', ';', 'EXP+']
 top = ; ip = ;
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
+string = [';', 'num', '#']
 stack = ['#', 'L', ';']
-top = L ip = id
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
+top = L ip = num
+string = ['num', '#']
 stack = ['#', 'L']
-top = E ip = id
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E']
-top = T ip = id
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T']
-top = F ip = id
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+', 'F']
-top = id ip = id
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+', 'id']
-top = T+ ip = *
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+']
-top = * ip = *
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+', 'F', '*']
-top = F ip = id
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+', 'F']
-top = id ip = id
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+', 'id']
-top = T+ ip = *
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+']
-top = * ip = *
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+', 'F', '*']
-top = F ip = id
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+', 'F']
-top = id ip = id
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+', 'id']
-top = T+ ip = ;
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+']
-top = E+ ip = ;
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';', 'E+']
-top = ; ip = ;
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L', ';']
-top = L ip = #
-string = ['id', '+', 'id', '*', 'id', ';', 'id', '*', 'id', '*', 'id', ';', '#']
-stack = ['#', 'L']
-====================== Analyze Success! ========================
+top = EXP ip = num
+string = ['num', '#']
+stack = ['#', 'L', ';', 'EXP']
+top = T ip = num
+string = ['num', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T']
+top = F ip = num
+string = ['num', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'F']
+top = NUM ip = num
+string = ['num', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'NUM']
+top = num ip = num
+string = ['num', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'NUM+', 'num']
+top = NUM+ ip = #
+string = ['#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'NUM+']
+============= no more lexicals, system logout ==============
+============= Unrecoverable error ==========================

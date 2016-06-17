@@ -51,11 +51,11 @@ def test(filePath, ansPath=None, string=None, lexical=None):
 if __name__ == "__main__":
     Config.read_config()
     lr = LexicalResult()
-    lr.init_from_file('result.txt')
+    lr.init_from_file('result.txt', 'parseCode.txt')
     # for all the process
     test('g3.9.txt', 'g3.9`.txt', "id + id * id ;")
     # test('g3.8.txt', 'g3.8`.txt')
     # test('g3.4.txt', 'g3.4`.txt')
     # test('g3.10.txt', 'g3.10`.txt')
     # test('g3.11.txt', string = 'a b b c d e')
-    test('g3.9.txt', ansPath='g3.9`.txt', lexical=lr)
+    test('my_test.txt', lexical=lr)

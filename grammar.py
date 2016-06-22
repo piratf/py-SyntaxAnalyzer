@@ -70,10 +70,20 @@ class Grammar(object):
 
     def extract_left_factor(self):
         new_reg_list = []
-        for index, reg in enumerate(self.regs):
+        index = 0
+        for reg in self.regs:
             [new_reg_list.append([index + 1, x]) for x in reg.extract_left_factor()]
-        [self.regs.insert(pos, x) for pos, x in new_reg_list]
-                
+            index += 1
+        while len(new_reg_list) > 0:
+            temp_reg_list = new_reg_list[:]
+            print (temp_reg_list)
+            [self.regs.insert(pos, x) for pos, x in new_reg_list]
+            new_reg_list = []
+            for reg in temp_reg_list:
+                reg = reg[1]
+                index += 1
+                [new_reg_list.append([index + 1, x]) for x in reg.extract_left_factor()]
+
     def get_first_set(self):
         self.name_set = set([reg.name for reg in self.regs])
         for reg in reversed(self.regs):

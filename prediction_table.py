@@ -65,22 +65,41 @@ class PredictionTable(object):
         self.error_cnt += 1
         self.errors.append((ip, pos))
 
+    def print_error(self):
+        for x in self.errors:
+            self.deal_error(self.lexical, x[0], x[1])
+        print('==========================================================')
+
     def deal_error(self, lexical, ip, pos):
         lr_list = lexical.result_list
-        print('========================= error ========================')
-        print("error at {}, the production expression not matched.".format(ip))
-        line = lexical.code_line_list[lr_list[pos].line_num].strip()
-        print('at line {:<3} column {:<3}:'.format(
-            lr_list[pos].line_num + 1, lr_list[pos].start_pos), line)
-        print('                        ' +
-              ' '.join(['' for x in range(lr_list[pos].start_pos + 1)]), end='')
-        print('^', end='')
-        print(
-            ' '.join(['' for x in range(len(line) - lr_list[pos].start_pos)]))
+        print('========================= error ==========================')
+        line = ''
+        if pos >= len(lr_list):
+            print("error at {}, this statement is incomplete.".format(ip))
+            pos -= 1
+            line = lexical.code_line_list[lr_list[pos].line_num].strip()
+            print('at line {:<3} column {:<3}:'.format( \
+                lr_list[pos].line_num + 1, lr_list[pos].end_pos + 1), line)
+            print('                        ' +
+              ' '.join(['' for x in range(lr_list[pos].end_pos + 1)]), end='')
+            print('^', end='')
+            print(
+                ' '.join(['' for x in range(len(line) - lr_list[pos].end_pos)]))
+        else:
+            print("error at {}, the production expression not matched.".format(ip))
+            line = lexical.code_line_list[lr_list[pos].line_num].strip()
+            print('at line {:<3} column {:<3}:'.format( \
+                lr_list[pos].line_num + 1, lr_list[pos].start_pos), line)
+            print('                        ' +
+                  ' '.join(['' for x in range(lr_list[pos].start_pos + 1)]), end='')
+            print('^', end='')
+            print(
+                ' '.join(['' for x in range(len(line) - lr_list[pos].start_pos)]))
 
         print('--------------------------------------------------------')
 
     def analyze(self, lexical):
+        self.lexical = lexical
         self.error_cnt = 0
         print('====================== {} ========================='.format(
             "start analyze"))
@@ -115,13 +134,14 @@ class PredictionTable(object):
                     continue
 
                 if len(l) < 1:
+                    self.push_error(ip, pos)
                     if ip == '#':
                         print(
                             '============= no more lexicals, system logout ==============')
                         print(
                             '============= Unrecoverable error ==========================')
+                        self.print_error()
                         return
-                    self.push_error(ip, pos)
                     pos += 1
                     continue
                 stack.pop()
@@ -147,6 +167,13 @@ class PredictionTable(object):
                     # if len(layer_stack) > 0 and layer_stack[-1] != layer:
                     if len(layer_stack) == 0 or layer != layer_stack[-1][0]:
                         layer_stack.append((layer, layer_mark))
+                    print ('top =', top)
+                    print (layer)
+                    while top not in layer.keys():
+                        layer = layer_stack[-1][0]
+                        layer_stack.pop()
+                        # print (layer)
+                        # [print (x) for x in layer_stack]
                     layer = layer[top]
                     layer_cnt = len(l)
                     for x in l:
@@ -179,17 +206,14 @@ class PredictionTable(object):
             print('=========== Analyze completed, {} error{} found ==========='.format(
                 self.error_cnt, '' if self.error_cnt < 2 else 's'))
 
-        # print errors
-        for x in self.errors:
-            self.deal_error(lexical, x[0], x[1])
-        print('==========================================================')
+        self.print_error()
         self.bfs()
         # self.display_tree()
         return self.tree
 
     def bfs(self):
         stack = [v for k, v in self.tree.items()]
-        print (stack)
+        # print (stack)
         while len(stack) > 0:
             cur = stack[-1]
             print (cur)

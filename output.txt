@@ -3,52 +3,102 @@ argc = 3
 => start parse.
 line 0: ( num : 123 )
 line 0: ( + : + )
-line 0: ( num : 123 )
+line 0: ( num : 12 )
+line 0: ( . : . )
+line 0: ( . : . )
+line 0: ( num : 3 )
 line 0: ( * : * )
 line 0: ( num : 123 )
+line 0: ( e : e )
+line 0: ( - : - )
+line 0: ( num : 123 )
+line 1: ( num : 123 )
+line 1: ( + : + )
+line 1: ( num : 123 )
+line 1: ( + : + )
+line 1: ( + : + )
+line 1: ( num : 123 )
+line 1: ( e : e )
+line 1: ( + : + )
+line 1: ( num : 123 )
  found.
 line    0  - <  0 :  4 > - ( num : 123 ) 
-content: 123 + 123 * 123;
+content: 123 + 12..3 * 123e-123;
 line    0  - <  4 :  6 > - ( + : + ) 
-content: 123 + 123 * 123;
-line    0  - <  6 : 10 > - ( num : 123 ) 
-content: 123 + 123 * 123;
-line    0  - < 10 : 12 > - ( * : * ) 
-content: 123 + 123 * 123;
-line    0  - < 12 : 16 > - ( num : 123 ) 
-content: 123 + 123 * 123;
-line    0  - < 15 : 16 > - ( ; : ; ) 
-content: 123 + 123 * 123;
+content: 123 + 12..3 * 123e-123;
+line    0  - <  6 :  9 > - ( num : 12 ) 
+content: 123 + 12..3 * 123e-123;
+line    0  - <  8 : 10 > - ( . : . ) 
+content: 123 + 12..3 * 123e-123;
+line    0  - <  9 : 11 > - ( . : . ) 
+content: 123 + 12..3 * 123e-123;
+line    0  - < 10 : 12 > - ( num : 3 ) 
+content: 123 + 12..3 * 123e-123;
+line    0  - < 12 : 14 > - ( * : * ) 
+content: 123 + 12..3 * 123e-123;
+line    0  - < 14 : 18 > - ( num : 123 ) 
+content: 123 + 12..3 * 123e-123;
+line    0  - < 17 : 19 > - ( e : e ) 
+content: 123 + 12..3 * 123e-123;
+line    0  - < 18 : 20 > - ( - : - ) 
+content: 123 + 12..3 * 123e-123;
+line    0  - < 19 : 23 > - ( num : 123 ) 
+content: 123 + 12..3 * 123e-123;
+line    0  - < 22 : 23 > - ( ; : ; ) 
+content: 123 + 12..3 * 123e-123;
+line    1  - <  0 :  4 > - ( num : 123 ) 
+content: 123 + 123 ++ 123e+123;
+line    1  - <  4 :  6 > - ( + : + ) 
+content: 123 + 123 ++ 123e+123;
+line    1  - <  6 : 10 > - ( num : 123 ) 
+content: 123 + 123 ++ 123e+123;
+line    1  - < 10 : 12 > - ( + : + ) 
+content: 123 + 123 ++ 123e+123;
+line    1  - < 11 : 13 > - ( + : + ) 
+content: 123 + 123 ++ 123e+123;
+line    1  - < 13 : 17 > - ( num : 123 ) 
+content: 123 + 123 ++ 123e+123;
+line    1  - < 16 : 18 > - ( e : e ) 
+content: 123 + 123 ++ 123e+123;
+line    1  - < 17 : 19 > - ( + : + ) 
+content: 123 + 123 ++ 123e+123;
+line    1  - < 18 : 22 > - ( num : 123 ) 
+content: 123 + 123 ++ 123e+123;
+line    1  - < 21 : 22 > - ( ; : ; ) 
+content: 123 + 123 ++ 123e+123;
 ============= Lexical Analyze Finished =============
-============= 0 ERROR======= Grammar display ===========
-count: 6
+============= 0 ERROR[[7, <reg.Reg object at 0xb6d9d58c>]]
+[[9, <reg.Reg object at 0xb6d9d20c>]]
+======= Grammar display ===========
+count: 9
 ======= reg display =======
 name = L
 content:
-  - ['E', ';', 'L']
+  - ['EXP', ';', 'L']
   - ['\\e']
 first set:
-{'id', 'num', '(', '\\e'}
+{'id', '\\e', 'num', '('}
 follow set:
 {'#'}
 ======= display end =======
 ======= reg display =======
-name = E
+name = EXP
 content:
-  - ['T', 'E+']
+  - ['T', 'EXP+']
 first set:
 {'id', 'num', '('}
 follow set:
 {')', ';'}
 ======= display end =======
 ======= reg display =======
-name = E+
+name = EXP+
 content:
-  - ['+', 'T', 'E+']
-  - ['-', 'T', 'E+']
+  - ['+', 'T', 'EXP+']
+  - ['-', 'T', 'EXP+']
+  - ['=', 'T', 'EXP+']
   - ['\\e']
 first set:
-{'-', '\\e', '+'}
+{'+', '\\e', '=', '-'}
 follow set:
 {')', ';'}
 ======= display end =======
@@ -59,7 +109,7 @@ content:
 first set:
 {'id', 'num', '('}
 follow set:
-{')', ';', '-', '+'}
+{'+', ')', ';', '-', '='}
 ======= display end =======
 ======= reg display =======
 name = T+
@@ -69,189 +119,531 @@ content:
   - ['mod', 'F', 'T+']
   - ['\\e']
 first set:
-{'/', '*', 'mod', '\\e'}
+{'*', '/', '\\e', 'mod'}
 follow set:
-{')', ';', '-', '+'}
+{'+', ')', ';', '-', '='}
 ======= display end =======
 ======= reg display =======
 name = F
 content:
-  - ['(', 'E', ')']
+  - ['(', 'EXP', ')']
   - ['id']
-  - ['num']
+  - ['NUM']
 first set:
 {'id', 'num', '('}
 follow set:
-{'*', ';', '-', '+', '/', ')', 'mod'}
+{'/', 'mod', '+', '*', ')', '=', '-', ';'}
+======= display end =======
+======= reg display =======
+name = NUM
+content:
+  - ['num', 'NUM+']
+first set:
+{'num'}
+follow set:
+{'/', 'mod', '+', '*', ')', '=', '-', ';'}
+======= display end =======
+======= reg display =======
+name = NUM+
+content:
+  - ['.', 'num']
+  - ['\\e']
+  - ['e', 'NUM++']
+first set:
+{'e', '\\e', '.'}
+follow set:
+{'/', 'mod', '+', '*', ')', '=', '-', ';'}
+======= display end =======
+======= reg display =======
+name = NUM++
+content:
+  - ['num']
+  - ['+', 'num']
+  - ['-', 'num']
+first set:
+{'+', '-', 'num'}
+follow set:
+{'/', 'mod', '+', '*', ')', '=', '-', ';'}
 ======= display end =======
 ======= Grammar display end =======
 
 ========================== prediction table display =========================
-[]             [#]            [(]            [)]            [*]            [+]            [-]            [/]            [;]            [\e]           [id]           [mod]          [num]          
-[L]            [\e]           [E ; L]        []             []             []             []             []             []             [\e]           [E ; L]        []             [E ; L]        
-[E]            []             [T E+]         []             []             []             []             []             []             []             [T E+]         []             [T E+]         
-[E+]           []             []             [\e]           []             [+ T E+]       [- T E+]       []             [\e]           [\e]           []             []             []             
-[T]            []             [F T+]         []             []             []             []             []             []             []             [F T+]         []             [F T+]         
-[T+]           []             []             [\e]           [* F T+]       [\e]           [\e]           [/ F T+]       [\e]           [\e]           []             [mod F T+]     []             
-[F]            []             [( E )]        []             []             []             []             []             []             []             [id]           []             [num]          
+[]             [#]            [(]            [)]            [*]            [+]            [-]            [.]            [/]            [;]            [=]            [\e]           [e]            [id]           [mod]          [num]          
+[L]            [\e]           [EXP ; L]      []             []             []             []             []             []             []             []             [\e]           []             [EXP ; L]      []             [EXP ; L]      
+[EXP]          []             [T EXP+]       []             []             []             []             []             []             []             []             []             []             [T EXP+]       []             [T EXP+]       
+[EXP+]         []             []             [\e]           []             [+ T EXP+]     [- T EXP+]     []             []             [\e]           [= T EXP+]     [\e]           []             []             []             []             
+[T]            []             [F T+]         []             []             []             []             []             []             []             []             []             []             [F T+]         []             [F T+]         
+[T+]           []             []             [\e]           [* F T+]       [\e]           [\e]           []             [/ F T+]       [\e]           [\e]           [\e]           []             []             [mod F T+]     []             
+[F]            []             [( EXP )]      []             []             []             []             []             []             []             []             []             []             [id]           []             [NUM]          
+[NUM]          []             []             []             []             []             []             []             []             []             []             []             []             []             []             [num NUM+]     
+[NUM+]         []             []             [\e]           [\e]           [\e]           [\e]           [. num]        [\e]           [\e]           [\e]           [\e]           [e NUM++]      []             [\e]           []             
+[NUM++]        []             []             []             []             [+ num]        [- num]        []             []             []             []             []             []             []             []             [num]          
 ========================== prediction table display end ==========================
 
 line 0   : <   0 :   4 > - ( num : 123 )
 line 0   : <   4 :   6 > - ( + : + )
-line 0   : <   6 :  10 > - ( num : 123 )
-line 0   : <  10 :  12 > - ( * : * )
-line 0   : <  12 :  16 > - ( num : 123 )
-line 0   : <  15 :  16 > - ( ; : ; )
+line 0   : <   6 :   9 > - ( num : 12 )
+line 0   : <   8 :  10 > - ( . : . )
+line 0   : <   9 :  11 > - ( . : . )
+line 0   : <  10 :  12 > - ( num : 3 )
+line 0   : <  12 :  14 > - ( * : * )
+line 0   : <  14 :  18 > - ( num : 123 )
+line 0   : <  17 :  19 > - ( e : e )
+line 0   : <  18 :  20 > - ( - : - )
+line 0   : <  19 :  23 > - ( num : 123 )
+line 0   : <  22 :  23 > - ( ; : ; )
+line 1   : <   0 :   4 > - ( num : 123 )
+line 1   : <   4 :   6 > - ( + : + )
+line 1   : <   6 :  10 > - ( num : 123 )
+line 1   : <  10 :  12 > - ( + : + )
+line 1   : <  11 :  13 > - ( + : + )
+line 1   : <  13 :  17 > - ( num : 123 )
+line 1   : <  16 :  18 > - ( e : e )
+line 1   : <  17 :  19 > - ( + : + )
+line 1   : <  18 :  22 > - ( num : 123 )
+line 1   : <  21 :  22 > - ( ; : ; )
 ====================== start analyze =========================
-{'L': {}}
 
 top = L ip = num
-string = ['num', '+', 'num', '*', 'num', ';', '#']
+string = ['num', '+', 'num', '.', '.', 'num', '*', 'num', 'e', '-', 'num', ';', 'num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
 stack = ['#', 'L']
 pre len = 1
 cur len = 4
 >>> add
-{';': {}, 'E': {}, 'layer': 1, 'L': {}}
-({'L': {';': {}, 'E': {}, 'layer': 1, 'L': {}}}, 1)
+top = L
+{'L': {}}
 
-top = E ip = num
-string = ['num', '+', 'num', '*', 'num', ';', '#']
-stack = ['#', 'L', ';', 'E']
+top = EXP ip = num
+string = ['num', '+', 'num', '.', '.', 'num', '*', 'num', 'e', '-', 'num', ';', 'num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP']
 pre len = 3
 cur len = 5
 >>> add
-{'E+': {}, 'T': {}, 'layer': 2}
-({'L': {';': {}, 'E': {'E+': {}, 'T': {}, 'layer': 2}, 'layer': 1, 'L': {}}}, 1)
-({';': {}, 'E': {'E+': {}, 'T': {}, 'layer': 2}, 'layer': 1, 'L': {}}, 2)
+top = EXP
+{'L': {}, 'EXP': {}, 'layer': 1, ';': {}}
 
 top = T ip = num
-string = ['num', '+', 'num', '*', 'num', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T']
+string = ['num', '+', 'num', '.', '.', 'num', '*', 'num', 'e', '-', 'num', ';', 'num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T']
 pre len = 4
 cur len = 6
 >>> add
-{'T+': {}, 'F': {}, 'layer': 3}
-({'L': {';': {}, 'E': {'E+': {}, 'T': {'T+': {}, 'F': {}, 'layer': 3}, 'layer': 2}, 'layer': 1, 'L': {}}}, 1)
-({';': {}, 'E': {'E+': {}, 'T': {'T+': {}, 'F': {}, 'layer': 3}, 'layer': 2}, 'layer': 1, 'L': {}}, 2)
-({'E+': {}, 'T': {'T+': {}, 'F': {}, 'layer': 3}, 'layer': 2}, 3)
+top = T
+{'EXP+': {}, 'T': {}, 'layer': 2}
 
 top = F ip = num
-string = ['num', '+', 'num', '*', 'num', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+', 'F']
+string = ['num', '+', 'num', '.', '.', 'num', '*', 'num', 'e', '-', 'num', ';', 'num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'F']
 pre len = 5
 cur len = 6
 >>> add
-{'num': {}, 'layer': 4}
-({'L': {';': {}, 'E': {'E+': {}, 'T': {'T+': {}, 'F': {'num': {}, 'layer': 4}, 'layer': 3}, 'layer': 2}, 'layer': 1, 'L': {}}}, 1)
-({';': {}, 'E': {'E+': {}, 'T': {'T+': {}, 'F': {'num': {}, 'layer': 4}, 'layer': 3}, 'layer': 2}, 'layer': 1, 'L': {}}, 2)
-({'E+': {}, 'T': {'T+': {}, 'F': {'num': {}, 'layer': 4}, 'layer': 3}, 'layer': 2}, 3)
-({'T+': {}, 'F': {'num': {}, 'layer': 4}, 'layer': 3}, 4)
+top = F
+{'T+': {}, 'F': {}, 'layer': 3}
+
+top = NUM ip = num
+string = ['num', '+', 'num', '.', '.', 'num', '*', 'num', 'e', '-', 'num', ';', 'num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'NUM']
+pre len = 5
+cur len = 7
+>>> add
+top = NUM
+{'NUM': {}, 'layer': 4}
 
 top = num ip = num
-string = ['num', '+', 'num', '*', 'num', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+', 'num']
+string = ['num', '+', 'num', '.', '.', 'num', '*', 'num', 'e', '-', 'num', ';', 'num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'NUM+', 'num']
 ---terminal
 
+top = NUM+ ip = +
+string = ['+', 'num', '.', '.', 'num', '*', 'num', 'e', '-', 'num', ';', 'num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'NUM+']
+pre len = 5
+cur len = 5
+---empty
+
 top = T+ ip = +
-string = ['+', 'num', '*', 'num', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+']
+string = ['+', 'num', '.', '.', 'num', '*', 'num', 'e', '-', 'num', ';', 'num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+']
 pre len = 4
 cur len = 4
 ---empty
 
-top = E+ ip = +
-string = ['+', 'num', '*', 'num', ';', '#']
-stack = ['#', 'L', ';', 'E+']
+top = EXP+ ip = +
+string = ['+', 'num', '.', '.', 'num', '*', 'num', 'e', '-', 'num', ';', 'num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+']
 pre len = 3
 cur len = 6
 >>> add
-{'E+': {}, 'layer': 3, 'T': {}, '+': {}}
-({'L': {';': {}, 'E': {'E+': {'E+': {}, 'layer': 3, 'T': {}, '+': {}}, 'T': {'T+': {}, 'F': {'num': {}, 'layer': 4}, 'layer': 3}, 'layer': 2}, 'layer': 1, 'L': {}}}, 1)
-({';': {}, 'E': {'E+': {'E+': {}, 'layer': 3, 'T': {}, '+': {}}, 'T': {'T+': {}, 'F': {'num': {}, 'layer': 4}, 'layer': 3}, 'layer': 2}, 'layer': 1, 'L': {}}, 2)
-({'E+': {'E+': {}, 'layer': 3, 'T': {}, '+': {}}, 'T': {'T+': {}, 'F': {'num': {}, 'layer': 4}, 'layer': 3}, 'layer': 2}, 3)
+top = EXP+
+{'T+': {}, 'F': {'NUM': {'NUM+': {}, 'layer': 5, 'num': {}}, 'layer': 4}, 'layer': 3}
 
 top = + ip = +
-string = ['+', 'num', '*', 'num', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T', '+']
+string = ['+', 'num', '.', '.', 'num', '*', 'num', 'e', '-', 'num', ';', 'num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T', '+']
 ---terminal
 
 top = T ip = num
-string = ['num', '*', 'num', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T']
+string = ['num', '.', '.', 'num', '*', 'num', 'e', '-', 'num', ';', 'num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T']
 pre len = 4
 cur len = 6
 >>> add
-{'T+': {}, 'F': {}, 'layer': 4}
-({'L': {';': {}, 'E': {'E+': {'E+': {}, 'layer': 3, 'T': {'T+': {}, 'F': {}, 'layer': 4}, '+': {}}, 'T': {'T+': {}, 'F': {'num': {}, 'layer': 4}, 'layer': 3}, 'layer': 2}, 'layer': 1, 'L': {}}}, 1)
-({';': {}, 'E': {'E+': {'E+': {}, 'layer': 3, 'T': {'T+': {}, 'F': {}, 'layer': 4}, '+': {}}, 'T': {'T+': {}, 'F': {'num': {}, 'layer': 4}, 'layer': 3}, 'layer': 2}, 'layer': 1, 'L': {}}, 2)
-({'E+': {'E+': {}, 'layer': 3, 'T': {'T+': {}, 'F': {}, 'layer': 4}, '+': {}}, 'T': {'T+': {}, 'F': {'num': {}, 'layer': 4}, 'layer': 3}, 'layer': 2}, 3)
-({'E+': {}, 'layer': 3, 'T': {'T+': {}, 'F': {}, 'layer': 4}, '+': {}}, 4)
+top = T
+{'+': {}, 'EXP+': {}, 'T': {}, 'layer': 4}
 
 top = F ip = num
-string = ['num', '*', 'num', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+', 'F']
+string = ['num', '.', '.', 'num', '*', 'num', 'e', '-', 'num', ';', 'num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'F']
 pre len = 5
 cur len = 6
 >>> add
-{'num': {}, 'layer': 5}
-({'L': {';': {}, 'E': {'E+': {'E+': {}, 'layer': 3, 'T': {'T+': {}, 'F': {'num': {}, 'layer': 5}, 'layer': 4}, '+': {}}, 'T': {'T+': {}, 'F': {'num': {}, 'layer': 4}, 'layer': 3}, 'layer': 2}, 'layer': 1, 'L': {}}}, 1)
-({';': {}, 'E': {'E+': {'E+': {}, 'layer': 3, 'T': {'T+': {}, 'F': {'num': {}, 'layer': 5}, 'layer': 4}, '+': {}}, 'T': {'T+': {}, 'F': {'num': {}, 'layer': 4}, 'layer': 3}, 'layer': 2}, 'layer': 1, 'L': {}}, 2)
-({'E+': {'E+': {}, 'layer': 3, 'T': {'T+': {}, 'F': {'num': {}, 'layer': 5}, 'layer': 4}, '+': {}}, 'T': {'T+': {}, 'F': {'num': {}, 'layer': 4}, 'layer': 3}, 'layer': 2}, 3)
-({'E+': {}, 'layer': 3, 'T': {'T+': {}, 'F': {'num': {}, 'layer': 5}, 'layer': 4}, '+': {}}, 4)
-({'T+': {}, 'F': {'num': {}, 'layer': 5}, 'layer': 4}, 5)
+top = F
+{'T+': {}, 'F': {}, 'layer': 5}
+
+top = NUM ip = num
+string = ['num', '.', '.', 'num', '*', 'num', 'e', '-', 'num', ';', 'num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'NUM']
+pre len = 5
+cur len = 7
+>>> add
+top = NUM
+{'NUM': {}, 'layer': 6}
 
 top = num ip = num
-string = ['num', '*', 'num', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+', 'num']
+string = ['num', '.', '.', 'num', '*', 'num', 'e', '-', 'num', ';', 'num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'NUM+', 'num']
+---terminal
+
+top = NUM+ ip = .
+string = ['.', '.', 'num', '*', 'num', 'e', '-', 'num', ';', 'num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'NUM+']
+pre len = 5
+cur len = 7
+>>> add
+top = NUM+
+{'NUM+': {}, 'layer': 7, 'num': {}}
+
+top = . ip = .
+string = ['.', '.', 'num', '*', 'num', 'e', '-', 'num', ';', 'num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'num', '.']
+---terminal
+
+top = num ip = .
+string = ['.', 'num', '*', 'num', 'e', '-', 'num', ';', 'num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'num']
+---terminal
+
+top = num ip = num
+string = ['num', '*', 'num', 'e', '-', 'num', ';', 'num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'num']
 ---terminal
 
 top = T+ ip = *
-string = ['*', 'num', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+']
+string = ['*', 'num', 'e', '-', 'num', ';', 'num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+']
 pre len = 4
 cur len = 7
 >>> add
-{'*': {}, 'T+': {}, 'F': {}, 'layer': 5}
-({'L': {';': {}, 'E': {'E+': {'E+': {}, 'layer': 3, 'T': {'T+': {'*': {}, 'T+': {}, 'F': {}, 'layer': 5}, 'F': {'num': {}, 'layer': 5}, 'layer': 4}, '+': {}}, 'T': {'T+': {}, 'F': {'num': {}, 'layer': 4}, 'layer': 3}, 'layer': 2}, 'layer': 1, 'L': {}}}, 1)
-({';': {}, 'E': {'E+': {'E+': {}, 'layer': 3, 'T': {'T+': {'*': {}, 'T+': {}, 'F': {}, 'layer': 5}, 'F': {'num': {}, 'layer': 5}, 'layer': 4}, '+': {}}, 'T': {'T+': {}, 'F': {'num': {}, 'layer': 4}, 'layer': 3}, 'layer': 2}, 'layer': 1, 'L': {}}, 2)
-({'E+': {'E+': {}, 'layer': 3, 'T': {'T+': {'*': {}, 'T+': {}, 'F': {}, 'layer': 5}, 'F': {'num': {}, 'layer': 5}, 'layer': 4}, '+': {}}, 'T': {'T+': {}, 'F': {'num': {}, 'layer': 4}, 'layer': 3}, 'layer': 2}, 3)
-({'E+': {}, 'layer': 3, 'T': {'T+': {'*': {}, 'T+': {}, 'F': {}, 'layer': 5}, 'F': {'num': {}, 'layer': 5}, 'layer': 4}, '+': {}}, 4)
-({'T+': {'*': {}, 'T+': {}, 'F': {}, 'layer': 5}, 'F': {'num': {}, 'layer': 5}, 'layer': 4}, 5)
+top = T+
+{'NUM': {'NUM+': {'layer': 8, '.': {}, 'num': {}}, 'layer': 7, 'num': {}}, 'layer': 6}
 
 top = * ip = *
-string = ['*', 'num', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+', 'F', '*']
+string = ['*', 'num', 'e', '-', 'num', ';', 'num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'F', '*']
 ---terminal
 
 top = F ip = num
-string = ['num', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+', 'F']
+string = ['num', 'e', '-', 'num', ';', 'num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'F']
 pre len = 5
 cur len = 6
 >>> add
-{'num': {}, 'layer': 6}
-({'L': {';': {}, 'E': {'E+': {'E+': {}, 'layer': 3, 'T': {'T+': {'*': {}, 'T+': {}, 'F': {'num': {}, 'layer': 6}, 'layer': 5}, 'F': {'num': {}, 'layer': 5}, 'layer': 4}, '+': {}}, 'T': {'T+': {}, 'F': {'num': {}, 'layer': 4}, 'layer': 3}, 'layer': 2}, 'layer': 1, 'L': {}}}, 1)
-({';': {}, 'E': {'E+': {'E+': {}, 'layer': 3, 'T': {'T+': {'*': {}, 'T+': {}, 'F': {'num': {}, 'layer': 6}, 'layer': 5}, 'F': {'num': {}, 'layer': 5}, 'layer': 4}, '+': {}}, 'T': {'T+': {}, 'F': {'num': {}, 'layer': 4}, 'layer': 3}, 'layer': 2}, 'layer': 1, 'L': {}}, 2)
-({'E+': {'E+': {}, 'layer': 3, 'T': {'T+': {'*': {}, 'T+': {}, 'F': {'num': {}, 'layer': 6}, 'layer': 5}, 'F': {'num': {}, 'layer': 5}, 'layer': 4}, '+': {}}, 'T': {'T+': {}, 'F': {'num': {}, 'layer': 4}, 'layer': 3}, 'layer': 2}, 3)
-({'E+': {}, 'layer': 3, 'T': {'T+': {'*': {}, 'T+': {}, 'F': {'num': {}, 'layer': 6}, 'layer': 5}, 'F': {'num': {}, 'layer': 5}, 'layer': 4}, '+': {}}, 4)
-({'T+': {'*': {}, 'T+': {}, 'F': {'num': {}, 'layer': 6}, 'layer': 5}, 'F': {'num': {}, 'layer': 5}, 'layer': 4}, 5)
-({'*': {}, 'T+': {}, 'F': {'num': {}, 'layer': 6}, 'layer': 5}, 6)
+top = F
+{'*': {}, 'T+': {}, 'F': {}, 'layer': 7}
+
+top = NUM ip = num
+string = ['num', 'e', '-', 'num', ';', 'num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'NUM']
+pre len = 5
+cur len = 7
+>>> add
+top = NUM
+{'NUM': {}, 'layer': 8}
+
+top = num ip = num
+string = ['num', 'e', '-', 'num', ';', 'num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'NUM+', 'num']
+---terminal
+
+top = NUM+ ip = e
+string = ['e', '-', 'num', ';', 'num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'NUM+']
+pre len = 5
+cur len = 7
+>>> add
+top = NUM+
+{'NUM+': {}, 'layer': 9, 'num': {}}
+
+top = e ip = e
+string = ['e', '-', 'num', ';', 'num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'NUM++', 'e']
+---terminal
+
+top = NUM++ ip = -
+string = ['-', 'num', ';', 'num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'NUM++']
+pre len = 5
+cur len = 7
+>>> add
+top = NUM++
+{'e': {}, 'NUM++': {}, 'layer': 10}
+
+top = - ip = -
+string = ['-', 'num', ';', 'num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'num', '-']
+---terminal
+
+top = num ip = num
+string = ['num', ';', 'num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'num']
+---terminal
+
+top = T+ ip = ;
+string = [';', 'num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+']
+pre len = 4
+cur len = 4
+---empty
+
+top = EXP+ ip = ;
+string = [';', 'num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+']
+pre len = 3
+cur len = 3
+---empty
+
+top = ; ip = ;
+string = [';', 'num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';']
+---terminal
+
+top = L ip = num
+string = ['num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L']
+pre len = 1
+cur len = 4
+>>> add
+top = L
+{'*': {}, 'T+': {}, 'F': {'NUM': {'NUM+': {'e': {}, 'NUM++': {'-': {}, 'layer': 11, 'num': {}}, 'layer': 10}, 'layer': 9, 'num': {}}, 'layer': 8}, 'layer': 7}
+
+top = EXP ip = num
+string = ['num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP']
+pre len = 3
+cur len = 5
+>>> add
+top = EXP
+{'L': {}, 'EXP': {}, 'layer': 6, ';': {}}
+
+top = T ip = num
+string = ['num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T']
+pre len = 4
+cur len = 6
+>>> add
+top = T
+{'EXP+': {}, 'T': {}, 'layer': 7}
+
+top = F ip = num
+string = ['num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'F']
+pre len = 5
+cur len = 6
+>>> add
+top = F
+{'T+': {}, 'F': {}, 'layer': 8}
+
+top = NUM ip = num
+string = ['num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'NUM']
+pre len = 5
+cur len = 7
+>>> add
+top = NUM
+{'NUM': {}, 'layer': 9}
+
+top = num ip = num
+string = ['num', '+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'NUM+', 'num']
+---terminal
+
+top = NUM+ ip = +
+string = ['+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'NUM+']
+pre len = 5
+cur len = 5
+---empty
+
+top = T+ ip = +
+string = ['+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+']
+pre len = 4
+cur len = 4
+---empty
+
+top = EXP+ ip = +
+string = ['+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+']
+pre len = 3
+cur len = 6
+>>> add
+top = EXP+
+{'T+': {}, 'F': {'NUM': {'NUM+': {}, 'layer': 10, 'num': {}}, 'layer': 9}, 'layer': 8}
+
+top = + ip = +
+string = ['+', 'num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T', '+']
+---terminal
+
+top = T ip = num
+string = ['num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T']
+pre len = 4
+cur len = 6
+>>> add
+top = T
+{'+': {}, 'EXP+': {}, 'T': {}, 'layer': 9}
+
+top = F ip = num
+string = ['num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'F']
+pre len = 5
+cur len = 6
+>>> add
+top = F
+{'T+': {}, 'F': {}, 'layer': 10}
+
+top = NUM ip = num
+string = ['num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'NUM']
+pre len = 5
+cur len = 7
+>>> add
+top = NUM
+{'NUM': {}, 'layer': 11}
+
+top = num ip = num
+string = ['num', '+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'NUM+', 'num']
+---terminal
+
+top = NUM+ ip = +
+string = ['+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'NUM+']
+pre len = 5
+cur len = 5
+---empty
+
+top = T+ ip = +
+string = ['+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+']
+pre len = 4
+cur len = 4
+---empty
+
+top = EXP+ ip = +
+string = ['+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+']
+pre len = 3
+cur len = 6
+>>> add
+top = EXP+
+{'T+': {}, 'F': {'NUM': {'NUM+': {}, 'layer': 12, 'num': {}}, 'layer': 11}, 'layer': 10}
+
+top = + ip = +
+string = ['+', '+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T', '+']
+---terminal
+
+top = T ip = +
+string = ['+', 'num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T']
+
+top = T ip = num
+string = ['num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T']
+pre len = 4
+cur len = 6
+>>> add
+top = T
+{'+': {}, 'EXP+': {}, 'T': {}, 'layer': 11}
+
+top = F ip = num
+string = ['num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'F']
+pre len = 5
+cur len = 6
+>>> add
+top = F
+{'T+': {}, 'F': {}, 'layer': 12}
+
+top = NUM ip = num
+string = ['num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'NUM']
+pre len = 5
+cur len = 7
+>>> add
+top = NUM
+{'NUM': {}, 'layer': 13}
+
+top = num ip = num
+string = ['num', 'e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'NUM+', 'num']
+---terminal
+
+top = NUM+ ip = e
+string = ['e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'NUM+']
+pre len = 5
+cur len = 7
+>>> add
+top = NUM+
+{'NUM+': {}, 'layer': 14, 'num': {}}
+
+top = e ip = e
+string = ['e', '+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'NUM++', 'e']
+---terminal
+
+top = NUM++ ip = +
+string = ['+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'NUM++']
+pre len = 5
+cur len = 7
+>>> add
+top = NUM++
+{'e': {}, 'NUM++': {}, 'layer': 15}
+
+top = + ip = +
+string = ['+', 'num', ';', '#']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'num', '+']
+---terminal
 
 top = num ip = num
 string = ['num', ';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+', 'num']
+stack = ['#', 'L', ';', 'EXP+', 'T+', 'num']
 ---terminal
 
 top = T+ ip = ;
 string = [';', '#']
-stack = ['#', 'L', ';', 'E+', 'T+']
+stack = ['#', 'L', ';', 'EXP+', 'T+']
 pre len = 4
 cur len = 4
 ---empty
 
-top = E+ ip = ;
+top = EXP+ ip = ;
 string = [';', '#']
-stack = ['#', 'L', ';', 'E+']
+stack = ['#', 'L', ';', 'EXP+']
 pre len = 3
 cur len = 3
 ---empty
@@ -267,33 +659,105 @@ stack = ['#', 'L']
 pre len = 1
 cur len = 1
 ---empty
-====================== Analyze Success! ========================
+=========== Analyze completed, 2 errors found ===========
+========================= error ==========================
+error at ., the production expression not matched.
+at line 1   column 9  : 123 + 12..3 * 123e-123;
+                                 ^             
+--------------------------------------------------------
+========================= error ==========================
+error at +, the production expression not matched.
+at line 2   column 11 : 123 + 123 ++ 123e+123;
+                                   ^          
+--------------------------------------------------------
 ==========================================================
-[{';': {}, 'E': {'E+': {'E+': {}, 'layer': 3, 'T': {'T+': {'*': {}, 'T+': {}, 'F': {'num': {}, 'layer': 6}, 'layer': 5}, 'F': {'num': {}, 'layer': 5}, 'layer': 4}, '+': {}}, 'T': {'T+': {}, 'F': {'num': {}, 'layer': 4}, 'layer': 3}, 'layer': 2}, 'layer': 1, 'L': {}}]
-{';': {}, 'E': {'E+': {'E+': {}, 'layer': 3, 'T': {'T+': {'*': {}, 'T+': {}, 'F': {'num': {}, 'layer': 6}, 'layer': 5}, 'F': {'num': {}, 'layer': 5}, 'layer': 4}, '+': {}}, 'T': {'T+': {}, 'F': {'num': {}, 'layer': 4}, 'layer': 3}, 'layer': 2}, 'layer': 1, 'L': {}}
-k = ;
-k = E
+{'L': {'L': {}, 'EXP': {'EXP+': {'+': {}, 'EXP+': {'+': {}, 'EXP+': {}, 'T': {'T+': {}, 'F': {'NUM': {'NUM+': {'e': {}, 'NUM++': {'+': {}, 'layer': 16, 'num': {}}, 'layer': 15}, 'layer': 14, 'num': {}}, 'layer': 13}, 'layer': 12}, 'layer': 11}, 'T': {'T+': {}, 'F': {'NUM': {'NUM+': {}, 'layer': 12, 'num': {}}, 'layer': 11}, 'layer': 10}, 'layer': 9}, 'T': {'T+': {}, 'F': {'NUM': {'NUM+': {}, 'layer': 10, 'num': {}}, 'layer': 9}, 'layer': 8}, 'layer': 7}, 'layer': 6, ';': {}}, 'EXP': {'EXP+': {'+': {}, 'EXP+': {}, 'T': {'T+': {'*': {}, 'T+': {}, 'F': {'NUM': {'NUM+': {'e': {}, 'NUM++': {'-': {}, 'layer': 11, 'num': {}}, 'layer': 10}, 'layer': 9, 'num': {}}, 'layer': 8}, 'layer': 7}, 'F': {'NUM': {'NUM+': {'layer': 8, '.': {}, 'num': {}}, 'layer': 7, 'num': {}}, 'layer': 6}, 'layer': 5}, 'layer': 4}, 'T': {'T+': {}, 'F': {'NUM': {'NUM+': {}, 'layer': 5, 'num': {}}, 'layer': 4}, 'layer': 3}, 'layer': 2}, 'layer': 1, ';': {}}
 k = L
-{'E+': {'E+': {}, 'layer': 3, 'T': {'T+': {'*': {}, 'T+': {}, 'F': {'num': {}, 'layer': 6}, 'layer': 5}, 'F': {'num': {}, 'layer': 5}, 'layer': 4}, '+': {}}, 'T': {'T+': {}, 'F': {'num': {}, 'layer': 4}, 'layer': 3}, 'layer': 2}
-k = E+
+k = EXP
+k = ;
+{'EXP+': {'+': {}, 'EXP+': {}, 'T': {'T+': {'*': {}, 'T+': {}, 'F': {'NUM': {'NUM+': {'e': {}, 'NUM++': {'-': {}, 'layer': 11, 'num': {}}, 'layer': 10}, 'layer': 9, 'num': {}}, 'layer': 8}, 'layer': 7}, 'F': {'NUM': {'NUM+': {'layer': 8, '.': {}, 'num': {}}, 'layer': 7, 'num': {}}, 'layer': 6}, 'layer': 5}, 'layer': 4}, 'T': {'T+': {}, 'F': {'NUM': {'NUM+': {}, 'layer': 5, 'num': {}}, 'layer': 4}, 'layer': 3}, 'layer': 2}
+k = EXP+
 k = T
-{'T+': {}, 'F': {'num': {}, 'layer': 4}, 'layer': 3}
+{'T+': {}, 'F': {'NUM': {'NUM+': {}, 'layer': 5, 'num': {}}, 'layer': 4}, 'layer': 3}
 k = T+
 k = F
-{'num': {}, 'layer': 4}
+{'NUM': {'NUM+': {}, 'layer': 5, 'num': {}}, 'layer': 4}
+k = NUM
+{'NUM+': {}, 'layer': 5, 'num': {}}
+k = NUM+
 k = num
-{'E+': {}, 'layer': 3, 'T': {'T+': {'*': {}, 'T+': {}, 'F': {'num': {}, 'layer': 6}, 'layer': 5}, 'F': {'num': {}, 'layer': 5}, 'layer': 4}, '+': {}}
-k = E+
-k = T
+{'+': {}, 'EXP+': {}, 'T': {'T+': {'*': {}, 'T+': {}, 'F': {'NUM': {'NUM+': {'e': {}, 'NUM++': {'-': {}, 'layer': 11, 'num': {}}, 'layer': 10}, 'layer': 9, 'num': {}}, 'layer': 8}, 'layer': 7}, 'F': {'NUM': {'NUM+': {'layer': 8, '.': {}, 'num': {}}, 'layer': 7, 'num': {}}, 'layer': 6}, 'layer': 5}, 'layer': 4}
 k = +
-{'T+': {'*': {}, 'T+': {}, 'F': {'num': {}, 'layer': 6}, 'layer': 5}, 'F': {'num': {}, 'layer': 5}, 'layer': 4}
+k = EXP+
+k = T
+{'T+': {'*': {}, 'T+': {}, 'F': {'NUM': {'NUM+': {'e': {}, 'NUM++': {'-': {}, 'layer': 11, 'num': {}}, 'layer': 10}, 'layer': 9, 'num': {}}, 'layer': 8}, 'layer': 7}, 'F': {'NUM': {'NUM+': {'layer': 8, '.': {}, 'num': {}}, 'layer': 7, 'num': {}}, 'layer': 6}, 'layer': 5}
 k = T+
 k = F
-{'num': {}, 'layer': 5}
+{'NUM': {'NUM+': {'layer': 8, '.': {}, 'num': {}}, 'layer': 7, 'num': {}}, 'layer': 6}
+k = NUM
+{'NUM+': {'layer': 8, '.': {}, 'num': {}}, 'layer': 7, 'num': {}}
+k = NUM+
 k = num
-{'*': {}, 'T+': {}, 'F': {'num': {}, 'layer': 6}, 'layer': 5}
+{'layer': 8, '.': {}, 'num': {}}
+k = .
+k = num
+{'*': {}, 'T+': {}, 'F': {'NUM': {'NUM+': {'e': {}, 'NUM++': {'-': {}, 'layer': 11, 'num': {}}, 'layer': 10}, 'layer': 9, 'num': {}}, 'layer': 8}, 'layer': 7}
 k = *
 k = T+
 k = F
-{'num': {}, 'layer': 6}
+{'NUM': {'NUM+': {'e': {}, 'NUM++': {'-': {}, 'layer': 11, 'num': {}}, 'layer': 10}, 'layer': 9, 'num': {}}, 'layer': 8}
+k = NUM
+{'NUM+': {'e': {}, 'NUM++': {'-': {}, 'layer': 11, 'num': {}}, 'layer': 10}, 'layer': 9, 'num': {}}
+k = NUM+
+k = num
+{'e': {}, 'NUM++': {'-': {}, 'layer': 11, 'num': {}}, 'layer': 10}
+k = e
+k = NUM++
+{'-': {}, 'layer': 11, 'num': {}}
+k = -
+k = num
+{'L': {}, 'EXP': {'EXP+': {'+': {}, 'EXP+': {'+': {}, 'EXP+': {}, 'T': {'T+': {}, 'F': {'NUM': {'NUM+': {'e': {}, 'NUM++': {'+': {}, 'layer': 16, 'num': {}}, 'layer': 15}, 'layer': 14, 'num': {}}, 'layer': 13}, 'layer': 12}, 'layer': 11}, 'T': {'T+': {}, 'F': {'NUM': {'NUM+': {}, 'layer': 12, 'num': {}}, 'layer': 11}, 'layer': 10}, 'layer': 9}, 'T': {'T+': {}, 'F': {'NUM': {'NUM+': {}, 'layer': 10, 'num': {}}, 'layer': 9}, 'layer': 8}, 'layer': 7}, 'layer': 6, ';': {}}
+k = L
+k = EXP
+k = ;
+{'EXP+': {'+': {}, 'EXP+': {'+': {}, 'EXP+': {}, 'T': {'T+': {}, 'F': {'NUM': {'NUM+': {'e': {}, 'NUM++': {'+': {}, 'layer': 16, 'num': {}}, 'layer': 15}, 'layer': 14, 'num': {}}, 'layer': 13}, 'layer': 12}, 'layer': 11}, 'T': {'T+': {}, 'F': {'NUM': {'NUM+': {}, 'layer': 12, 'num': {}}, 'layer': 11}, 'layer': 10}, 'layer': 9}, 'T': {'T+': {}, 'F': {'NUM': {'NUM+': {}, 'layer': 10, 'num': {}}, 'layer': 9}, 'layer': 8}, 'layer': 7}
+k = EXP+
+k = T
+{'T+': {}, 'F': {'NUM': {'NUM+': {}, 'layer': 10, 'num': {}}, 'layer': 9}, 'layer': 8}
+k = T+
+k = F
+{'NUM': {'NUM+': {}, 'layer': 10, 'num': {}}, 'layer': 9}
+k = NUM
+{'NUM+': {}, 'layer': 10, 'num': {}}
+k = NUM+
+k = num
+{'+': {}, 'EXP+': {'+': {}, 'EXP+': {}, 'T': {'T+': {}, 'F': {'NUM': {'NUM+': {'e': {}, 'NUM++': {'+': {}, 'layer': 16, 'num': {}}, 'layer': 15}, 'layer': 14, 'num': {}}, 'layer': 13}, 'layer': 12}, 'layer': 11}, 'T': {'T+': {}, 'F': {'NUM': {'NUM+': {}, 'layer': 12, 'num': {}}, 'layer': 11}, 'layer': 10}, 'layer': 9}
+k = +
+k = EXP+
+k = T
+{'T+': {}, 'F': {'NUM': {'NUM+': {}, 'layer': 12, 'num': {}}, 'layer': 11}, 'layer': 10}
+k = T+
+k = F
+{'NUM': {'NUM+': {}, 'layer': 12, 'num': {}}, 'layer': 11}
+k = NUM
+{'NUM+': {}, 'layer': 12, 'num': {}}
+k = NUM+
+k = num
+{'+': {}, 'EXP+': {}, 'T': {'T+': {}, 'F': {'NUM': {'NUM+': {'e': {}, 'NUM++': {'+': {}, 'layer': 16, 'num': {}}, 'layer': 15}, 'layer': 14, 'num': {}}, 'layer': 13}, 'layer': 12}, 'layer': 11}
+k = +
+k = EXP+
+k = T
+{'T+': {}, 'F': {'NUM': {'NUM+': {'e': {}, 'NUM++': {'+': {}, 'layer': 16, 'num': {}}, 'layer': 15}, 'layer': 14, 'num': {}}, 'layer': 13}, 'layer': 12}
+k = T+
+k = F
+{'NUM': {'NUM+': {'e': {}, 'NUM++': {'+': {}, 'layer': 16, 'num': {}}, 'layer': 15}, 'layer': 14, 'num': {}}, 'layer': 13}
+k = NUM
+{'NUM+': {'e': {}, 'NUM++': {'+': {}, 'layer': 16, 'num': {}}, 'layer': 15}, 'layer': 14, 'num': {}}
+k = NUM+
+k = num
+{'e': {}, 'NUM++': {'+': {}, 'layer': 16, 'num': {}}, 'layer': 15}
+k = e
+k = NUM++
+{'+': {}, 'layer': 16, 'num': {}}
+k = +
 k = num

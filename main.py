@@ -66,5 +66,5 @@ if __name__ == "__main__":
     # test('g3.4.txt', 'g3.4`.txt')
     # test('g3.10.txt', 'g3.10`.txt')
     # test('g3.11.txt', string = 'a b b c d e')
-    test('g3.9.txt', 'g3.9`.txt', lexical=lr)
-    # test('my_test.txt', lexical=lr)
+    # test('g3.9.txt', 'g3.9`.txt', lexical=lr)
+    test('my_test.txt', lexical=lr)

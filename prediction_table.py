@@ -7,39 +7,47 @@ from grammar import Grammar
 from config import Config
 from my_exceptions import WrongGrammar
 
+
 class PredictionTable(object):
     """the to dimensional sheet to analyze grammar"""
+
     def __init__(self, grammar):
         super(PredictionTable, self).__init__()
         self.name_set = grammar.name_set
         self.init_sheet(grammar)
+        self.errors = []
+        self.tree = {}
 
     def display(self):
-        print ('========================== {} ========================='.format('prediction table display'))
+        print('========================== {} ========================='.format(
+            'prediction table display'))
         for row in self.sheet:
             for part in row:
                 string = '[' + ' '.join(part) + ']'
-                print (string, end = ' ')
-                print (' '.join(['' for x in range(15 - len(string))]), end = '')
-            print ()
-        print ('========================== {} =====================\n'.format('prediction table display end'))
-
+                print(string, end=' ')
+                print(' '.join(['' for x in range(15 - len(string))]), end='')
+            print()
+        print('========================== {} ==========================\n'.format(
+            'prediction table display end'))
 
     def init_sheet(self, grammar):
         string_set = set()
         name_list = [reg.name for reg in grammar.regs]
-        [[string_set.update(reg.first), string_set.update(reg.follow)] for reg in grammar.regs]
+        [[string_set.update(reg.first), string_set.update(reg.follow)]
+         for reg in grammar.regs]
         # print ("string set = ")
         # print (string_set)
         # pretreatment table
-        self.sheet = [[[] for x in range(len(string_set) + 1)] for x in range(len(name_list) + 1)]
-        self.terminator_dict = {value : index + 1 for index, value in enumerate(sorted(string_set))}
-        self.name_dict = {value : index + 1 for index, value in enumerate(name_list)}
+        self.sheet = [[[] for x in range(len(string_set) + 1)]
+                      for x in range(len(name_list) + 1)]
+        self.terminator_dict = {value: index + 1 for index,
+                                value in enumerate(sorted(string_set))}
+        self.name_dict = {value: index + 1 for index,
+                          value in enumerate(name_list)}
         for k, v in self.terminator_dict.items():
             self.sheet[0][v].append(k)
         for k, v in self.name_dict.items():
             self.sheet[v][0].append(k)
-
 
         for reg in grammar.regs:
             row = self.name_dict[reg.name]
@@ -47,28 +55,42 @@ class PredictionTable(object):
                 if content == []:
                     content = [Config.null]
                 c_first = grammar.do_first_from_content(content)
-                [self.sheet[row][self.terminator_dict[ter]].extend(content) for ter in c_first if ter not in self.name_set]
+                [self.sheet[row][self.terminator_dict[ter]].extend(
+                    content) for ter in c_first if ter not in self.name_set]
                 if Config.null in c_first:
-                    [self.sheet[row][self.terminator_dict[v]].extend(content) for v in reg.follow if v not in self.name_set]
+                    [self.sheet[row][self.terminator_dict[v]].extend(
+                        content) for v in reg.follow if v not in self.name_set]
+
+    def push_error(self, ip, pos):
+        self.error_cnt += 1
+        self.errors.append((ip, pos))
 
     def deal_error(self, lexical, ip, pos):
-        self.error_cnt += 1
         lr_list = lexical.result_list
-        print ('================ catch error ================')
-        print ("error at {}, the production expression not matched.".format(ip))
+        print('========================= error ========================')
+        print("error at {}, the production expression not matched.".format(ip))
         line = lexical.code_line_list[lr_list[pos].line_num].strip()
-        print ('at line {:<3} column {:<3}:'.format(lr_list[pos].line_num + 1, lr_list[pos].start_pos), line)
-        print ('                        ' + ' '.join(['' for x in range(lr_list[pos].start_pos + 1)]), end='')
-        print ('^', end='')
-        print (' '.join(['' for x in range(len(line) - lr_list[pos].start_pos)]))
+        print('at line {:<3} column {:<3}:'.format(
+            lr_list[pos].line_num + 1, lr_list[pos].start_pos), line)
+        print('                        ' +
+              ' '.join(['' for x in range(lr_list[pos].start_pos + 1)]), end='')
+        print('^', end='')
+        print(
+            ' '.join(['' for x in range(len(line) - lr_list[pos].start_pos)]))
 
-        print ('---------------------------------------------')
-
+        print('--------------------------------------------------------')
 
     def analyze(self, lexical):
-        self.error_cnt = 0;
-        print ('====================== {} ========================='.format("start analyze"))
+        self.error_cnt = 0
+        print('====================== {} ========================='.format(
+            "start analyze"))
         stack = ['#', self.sheet[1][0][0]]
+
+        self.tree[self.sheet[1][0][0]] = {}
+        layer = self.tree
+        layer_stack = []
+        layer_cnt = 0
+
         lr_list = lexical.result_list
         cur = [c.tag for c in lr_list]
         cur.append('#')
@@ -78,47 +100,98 @@ class PredictionTable(object):
         while not (stack[-1] == '#' and cur[pos] == '#'):
             ip = cur[pos]
             top = stack[-1]
-            print ("top =", top, "ip =", ip)
-            print ("string =", cur[pos:])
-            print ("stack =", stack)
+            print ('')
+            print('top =', top, 'ip =', ip)
+            print('string =', cur[pos:])
+            print('stack =', stack)
             if top in self.name_set:
                 try:
-                    l = self.sheet[self.name_dict[top]][self.terminator_dict[ip]]
+                    l = self.sheet[self.name_dict[top]][
+                        self.terminator_dict[ip]]
                 except KeyError as e:
-                    self.deal_error(lexical, ip, pos)
+                    self.push_error(ip, pos)
                     pos += 1
                     continue
 
-                else:
-                    pass
-                finally:
-                    pass
                 if len(l) < 1:
                     if ip == '#':
-                        print ('============= no more lexicals, system logout ==============')
-                        print ('============= Unrecoverable error ==========================')
-                        return;
-                    self.deal_error(lexical, ip, pos)
+                        print(
+                            '============= no more lexicals, system logout ==============')
+                        print(
+                            '============= Unrecoverable error ==========================')
+                        return
+                    self.push_error(ip, pos)
                     pos += 1
                     continue
                 stack.pop()
+                pre_len = len(stack)
+                print ('pre len =', pre_len)
                 stack.extend([x for x in reversed(l) if x != Config.null])
+                print ('cur len =', len(stack))
+                if len(stack) == pre_len:
+                    # print (layer)
+                    # [print (x) for x in layer_stack]
+                    print ('---empty')
+                    layer_cnt -= 1
+                    if (layer_cnt == 0):
+                        layer_stack.pop()
+                        layer = layer_stack[-1]
+                        layer_cnt = 1
+                    print (layer)
+                    [print (x) for x in layer_stack]
+                else:
+                    print ('>>> add')
+                    # if len(layer_stack) > 0 and layer_stack[-1] != layer:
+                    layer_stack.append(layer)
+                    layer = layer[top]
+                    layer_cnt = len(l)
+                    for x in l:
+                        layer[x] = {}
+                    print (layer)
+                    [print (x) for x in layer_stack]
             else:
+                print ('---terminal')
+                layer_cnt -= 1
+                if (layer_cnt == 0):
+                    layer_stack.pop()
+                    layer = layer_stack[-1]
+                    layer_cnt = 1
+                print (layer)
+                [print (x) for x in layer_stack]
                 if (top == ip):
                     pos += 1
                     stack.pop()
                 else:
-                    self.deal_error(lexical, ip, pos)
+                    self.push_error(ip, pos)
                     pos += 1
                     continue
 
         if self.error_cnt == 0:
-            print ('====================== {} ========================'.format('Analyze Success!'))
+            print('====================== {} ========================'.format(
+                'Analyze Success!'))
         else:
-            print ('================== Analyze completed, {} error{} found =========='.format(self.error_cnt, '' if self.error_cnt < 2 else 's'))
+            print('=========== Analyze completed, {} error{} found ==========='.format(
+                self.error_cnt, '' if self.error_cnt < 2 else 's'))
+
+        # print errors
+        for x in self.errors:
+            self.deal_error(lexical, x[0], x[1])
+        print('==========================================================')
+        self.display_tree()
+
+    def display_tree(self):
+        print('print tree')
+        # [print (x[0]) for x in self.tree.items()]
+        [self._display_tree(x) for x in self.tree.items()]
+
+    def _display_tree(self, node):
+        print(node[0])
+        print ([x[0] for x in node[1].items()])
+        [self._display_tree(x) for x in node[1].items() if len(x[1].items()) > 0]
 
     def analyze_string(self, string):
-        print ("====================== {} =========================".format("start analyze"))
+        print("====================== {} =========================".format(
+            "start analyze"))
         stack = ['#', self.sheet[1][0][0]]
         cur = string.split(' ')
         cur.append('#')
@@ -128,13 +201,14 @@ class PredictionTable(object):
         while not (stack[-1] == '#' and cur[pos] == '#'):
             ip = cur[pos]
             top = stack[-1]
-            print ("top =", top, "ip =", ip)
-            print ("string =", cur[pos:])
-            print ("stack =", stack)
+            print("top =", top, "ip =", ip)
+            print("string =", cur[pos:])
+            print("stack =", stack)
             if top in self.name_set:
                 l = self.sheet[self.name_dict[top]][self.terminator_dict[ip]]
                 if len(l) < 1:
-                    raise WrongGrammar("error at {}, the production expression not matched.".format(ip))
+                    raise WrongGrammar(
+                        "error at {}, the production expression not matched.".format(ip))
                 stack.pop()
                 stack.extend([x for x in reversed(l) if x != Config.null])
             else:
@@ -142,7 +216,8 @@ class PredictionTable(object):
                     pos += 1
                     stack.pop()
                 else:
-                    raise WrongGrammar("error at {}, the top of stack not match with grammar settings".format(ip))
+                    raise WrongGrammar(
+                        "error at {}, the top of stack not match with grammar settings".format(ip))
 
-        print ("====================== {} ========================".format("Analyze Success!"))
-
+        print("====================== {} ========================".format(
+            "Analyze Success!"))

@@ -35,7 +35,7 @@ class Grammar(object):
         new_name = reg.name + Config.suffix
         new_contents = [x for x in reg.get_str_list_after_my_head()]
         [x.append(new_name) for x in new_contents]
-        old_contents = [x[:] for x in reg.contents if len(x) > 0 and x[0] != reg.name]
+        old_contents = [x[:] for x in reg.contents if len(x) == 0 or x[0] != reg.name]
         [x.append(new_name) for x in old_contents]
 
         if (len(new_contents) > 0 and len(old_contents) > 0):
@@ -51,9 +51,13 @@ class Grammar(object):
         for i in range(1, len(self.regs) + 1):
             for j in range(0, i):
                 if (i < len(self.regs)):
+                    # after
                     ai = self.regs[i]
+                    # front
                     aj = self.regs[j]
-                    for x in ai.get_pos_list_if_startwith_prefix(aj.name):
+                    print ('aj name', aj.name)
+                    for x in ai.get_pos_list_if_startwith_prefix([aj.name]):
+                        print ('x', x)
                         tail = ai.get_the_str_after_its_head(x)
                         if (len(tail) > 0):
                             for jcontent in aj.contents:
@@ -62,6 +66,10 @@ class Grammar(object):
                                 ai.contents.append(jc)
                             del ai.contents[x]
                     ai.sort_contents()
+                    print ('ai:')
+                    ai.display()
+                    print ('aj:')
+                    aj.display()
                     self.remove_direct_left_recursion(i)
                 else:
                     self.remove_direct_left_recursion(j)
@@ -76,7 +84,6 @@ class Grammar(object):
             index += 1
         while len(new_reg_list) > 0:
             temp_reg_list = new_reg_list[:]
-            print (temp_reg_list)
             [self.regs.insert(pos, x) for pos, x in new_reg_list]
             new_reg_list = []
             for reg in temp_reg_list:

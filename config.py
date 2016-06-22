@@ -8,7 +8,7 @@ class Config(object):
     @classmethod
     def __init__(self):
         super(Config, self).__init__()
-    
+
     @classmethod
     def read_config(self):
         with open('config.conf') as conf:
@@ -18,7 +18,7 @@ class Config(object):
             self.split_str = self.get_config_value(line)
             line = conf.readline()
             self.null = self.get_config_value(line)
-            self.suffix = '+'
+            self.suffix = '`'
             # print (self.null)
             # print (self.split_str)
             # print (self.separator_str)

@@ -9,7 +9,7 @@ class RegError(Exception):
     """exception class for Reg"""
     def __init__(self, value):
         self.value = value
-        
+
     def __str__(self):
         return repr(self.value)
 
@@ -26,7 +26,7 @@ class Reg(object):
 
     def __eq__(self, other):
         return self.name == other.name and sorted(self.contents) == sorted(other.contents)
-    
+
     def display(self):
         print ("======= {} =======".format("reg display"))
         print ("name = {}".format(self.name))
@@ -58,13 +58,16 @@ class Reg(object):
         return self.contents[pos][1:]
 
     def get_pos_list_if_startwith_prefix(self, prefix):
-        # print ("contents =", self.contents)
-        # print ("prefix =", prefix)
+        print ("contents =", self.contents)
+        print ("prefix =", prefix)
+        for index, content in enumerate(self.contents):
+            if len(content) > len(prefix) and content[0:len(prefix)] == prefix:
+                print (content[0:len(prefix)])
         return [index for index, content in enumerate(self.contents) if len(content) >= len(prefix) and content[0:len(prefix)] == prefix]
 
     def extract_left_factor(self):
         new_reg_list = []
-        for loop in range(100):
+        while True:
             break_flag = True
             for content in self.contents:
                 book = []

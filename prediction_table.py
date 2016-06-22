@@ -87,9 +87,11 @@ class PredictionTable(object):
         stack = ['#', self.sheet[1][0][0]]
 
         self.tree[self.sheet[1][0][0]] = {}
+        print (self.tree)
         layer = self.tree
         layer_stack = []
         layer_cnt = 0
+        layer_mark = 0
 
         lr_list = lexical.result_list
         cur = [c.tag for c in lr_list]
@@ -134,30 +136,35 @@ class PredictionTable(object):
                     print ('---empty')
                     layer_cnt -= 1
                     if (layer_cnt == 0):
+                        layer = layer_stack[-1][0]
                         layer_stack.pop()
-                        layer = layer_stack[-1]
                         layer_cnt = 1
-                    print (layer)
-                    [print (x) for x in layer_stack]
+                        layer_mark = layer_stack[-1][1]
+                    # print (layer)
+                    # [print (x) for x in layer_stack]
                 else:
                     print ('>>> add')
+                    layer_mark += 1
                     # if len(layer_stack) > 0 and layer_stack[-1] != layer:
-                    layer_stack.append(layer)
+                    if len(layer_stack) == 0 or layer != layer_stack[-1][0]:
+                        layer_stack.append((layer, layer_mark))
                     layer = layer[top]
                     layer_cnt = len(l)
                     for x in l:
                         layer[x] = {}
+                    layer['layer'] = layer_mark
                     print (layer)
                     [print (x) for x in layer_stack]
             else:
                 print ('---terminal')
                 layer_cnt -= 1
                 if (layer_cnt == 0):
+                    layer = layer_stack[-1][0]
                     layer_stack.pop()
-                    layer = layer_stack[-1]
                     layer_cnt = 1
-                print (layer)
-                [print (x) for x in layer_stack]
+                    layer_mark = layer_stack[-1][1]
+                # print (layer)
+                # [print (x) for x in layer_stack]
                 if (top == ip):
                     pos += 1
                     stack.pop()
@@ -177,17 +184,46 @@ class PredictionTable(object):
         for x in self.errors:
             self.deal_error(lexical, x[0], x[1])
         print('==========================================================')
-        self.display_tree()
+        self.bfs()
+        # self.display_tree()
+        return self.tree
+
+    def bfs(self):
+        stack = [v for k, v in self.tree.items()]
+        print (stack)
+        while len(stack) > 0:
+            cur = stack[-1]
+            print (cur)
+            stack.pop()
+            # print (cur[0])
+            for k, v in cur.items():
+                if (k != 'layer'):
+                    print ('k =', k)
+                    if len(v) > 0:
+                        stack.append(v)
 
     def display_tree(self):
+        print (self.tree)
         print('print tree')
+        self.layers = [[]]
+        self.layers[0].extend([x[0] for x in self.tree.items()])
         # [print (x[0]) for x in self.tree.items()]
         [self._display_tree(x) for x in self.tree.items()]
+        print (self.layers)
 
     def _display_tree(self, node):
-        print(node[0])
-        print ([x[0] for x in node[1].items()])
-        [self._display_tree(x) for x in node[1].items() if len(x[1].items()) > 0]
+        num = node[1]['layer']
+        if len(self.layers) < num + 1:
+            self.layers.extend([x for x in range(num + 1 - len(self.layers))])
+
+        self.layers[num] = []
+        if node[0] != 'layer':
+            # print(node[0])
+            # print ([x[0] for x in node[1].items()])
+            # print ('layer:', num)
+            self.layers[num].extend([x[0] for x in node[1].items() if x[0] != 'layer'])
+            [self._display_tree(x) for x in node[1].items() if x[0] != 'layer' and len(x[1].items()) > 0]
+            # print ()
 
     def analyze_string(self, string):
         print("====================== {} =========================".format(

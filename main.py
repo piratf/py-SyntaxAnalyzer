@@ -8,6 +8,7 @@ from reg import Reg
 from grammar import Grammar
 from prediction_table import PredictionTable
 from config import Config
+from draw import Paint
 import sys
 
 # read regs from file
@@ -41,10 +42,13 @@ def test(filePath, ansPath=None, string=None, lexical=None):
     if lexical is not None:
         # if result is empty, it means lexical analyze was failed, then pass the next step
         if len(lr.result_list) == 0:
-            pass
+            pass2
         else:
             lexical.display()
-            sheet.analyze(lexical)
+            tree = sheet.analyze(lexical)
+            paint = Paint()
+            # paint.draw_tree(tree)
+            # paint.save('x.png')
 
     if string is not None:
         sheet.analyze_string(string)
@@ -62,4 +66,5 @@ if __name__ == "__main__":
     # test('g3.4.txt', 'g3.4`.txt')
     # test('g3.10.txt', 'g3.10`.txt')
     # test('g3.11.txt', string = 'a b b c d e')
-    test('my_test.txt', lexical=lr)
+    test('g3.9.txt', 'g3.9`.txt', lexical=lr)
+    # test('my_test.txt', lexical=lr)

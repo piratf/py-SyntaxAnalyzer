@@ -87,7 +87,6 @@ class PredictionTable(object):
         stack = ['#', self.sheet[1][0][0]]
 
         self.tree[self.sheet[1][0][0]] = {}
-        print (self.tree)
         layer = self.tree
         layer_stack = []
         layer_cnt = 0
@@ -153,8 +152,8 @@ class PredictionTable(object):
                     for x in l:
                         layer[x] = {}
                     layer['layer'] = layer_mark
-                    print (layer)
-                    [print (x) for x in layer_stack]
+                    # print (layer)
+                    # [print (x) for x in layer_stack]
             else:
                 print ('---terminal')
                 layer_cnt -= 1

@@ -27,7 +27,7 @@ def readGrammar(filePath):
 
 def test(filePath, ansPath=None, string=None, lexical=None):
     grammar = readGrammar(filePath)
-    sys.stdout = open("output.txt", 'w+')
+    sys.stdout = open("output.txt", 'a+')
     # grammar.remove_direct_left_recursion(0)
     grammar.remove_indirect_left_recursion()
     grammar.display()
@@ -64,10 +64,10 @@ if __name__ == "__main__":
     lr = LexicalResult()
     lr.init_from_file('result.txt', 'parseCode.txt')
     # for all the process
-    test('g3.9.txt', 'g3.9`.txt', "id + id * id ;")
-    test('g3.8.txt', 'g3.8`.txt')
-    test('g3.4.txt', 'g3.4`.txt')
-    test('g3.10.txt', 'g3.10`.txt')
-    test('g3.11.txt', string = 'a b b c d e')
-    test('g3.9.txt', 'g3.9`.txt', lexical=lr)
+    # test('g3.9.txt', 'g3.9`.txt', "id + id * id ;")
+    # test('g3.8.txt', 'g3.8`.txt')
+    # test('g3.4.txt', 'g3.4`.txt')
+    # test('g3.10.txt', 'g3.10`.txt')
+    # test('g3.11.txt', string = 'a b b c d e')
+    # test('g3.9.txt', 'g3.9`.txt', lexical=lr)
     test('my_test.txt', lexical=lr)

@@ -55,9 +55,9 @@ class Grammar(object):
                     ai = self.regs[i]
                     # front
                     aj = self.regs[j]
-                    print ('aj name', aj.name)
+                    # print ('aj name', aj.name)
                     for x in ai.get_pos_list_if_startwith_prefix([aj.name]):
-                        print ('x', x)
+                        # print ('x', x)
                         tail = ai.get_the_str_after_its_head(x)
                         if (len(tail) > 0):
                             for jcontent in aj.contents:
@@ -66,10 +66,10 @@ class Grammar(object):
                                 ai.contents.append(jc)
                             del ai.contents[x]
                     ai.sort_contents()
-                    print ('ai:')
-                    ai.display()
-                    print ('aj:')
-                    aj.display()
+                    # print ('ai:')
+                    # ai.display()
+                    # print ('aj:')
+                    # aj.display()
                     self.remove_direct_left_recursion(i)
                 else:
                     self.remove_direct_left_recursion(j)
